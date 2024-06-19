@@ -7,12 +7,13 @@ project - employer - employee, Employment mng system,
 Data access layer -dapper, service layer -webAPI asp net, Presentation layer - Blazor server.
 
 # //To do
-# 1.
-JWT for user login + Employer moedl, + Employer Service wirh login and register
+# 1
+1.Bussiness layer proj
+2.Services with automaper, (JWTService, AuthUtility) + fluent validation
+3.Shared project with DTOs 
 # 2.
-fluent validation + automapper + service/repository pattern
-# 3.
-Blazor, mudBlazor fw
+1.add roles to JWT auth
+2.Blazor, mudBlazor fw
 
 # in the end...
 Check Api(Controllers) security, check UI()Blazor security.

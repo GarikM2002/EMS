@@ -1,10 +1,11 @@
 ﻿using DataAccess.Enities;
 using DataAccess.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EMS.API.Controllers;
 
-[ApiController]
+[ApiController, Authorize]
 [Route("api/[controller]")]
 public class ContractsController(IContractRepository contractRepository) : ControllerBase
 {

@@ -1,12 +1,13 @@
 ﻿using DataAccess.Enities;
 using DataAccess.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EMS.API.Controllers;
 
-[ApiController]
+[ApiController, Authorize]
 [Route("api/[controller]")]
-public class EmployeesController(IEmployeeRepository employeeRepository) : ControllerBase
+public class EmployeeController(IEmployeeRepository employeeRepository) : ControllerBase
 {
     private readonly IEmployeeRepository employeeRepository = employeeRepository;
 
