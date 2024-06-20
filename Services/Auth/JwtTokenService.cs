@@ -1,11 +1,11 @@
-﻿using DataAccess.Enities;
-using EMS.API.Models;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using DataAccess.Enities;
+using Microsoft.IdentityModel.Tokens;
+using Services.Configurations;
 
-namespace EMS.API.Services
+namespace Services.Auth
 {
     public class JwtTokenService(JwtSettings jwtSettings)
     {

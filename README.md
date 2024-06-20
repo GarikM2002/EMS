@@ -8,12 +8,11 @@ Data access layer -dapper, service layer -webAPI asp net, Presentation layer - B
 
 # //To do
 # 1
-1.Bussiness layer proj
-2.Services with automaper, (JWTService, AuthUtility) + fluent validation
-3.Shared project with DTOs 
+2.fluent validation
+3.Validate for AuthController
 # 2.
-1.add roles to JWT auth
 2.Blazor, mudBlazor fw
+3.When Employee added he added by Employer so the row must be inserted in the EmployeeEmployeers table
 
 # in the end...
 Check Api(Controllers) security, check UI()Blazor security.

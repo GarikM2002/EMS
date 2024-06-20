@@ -1,9 +1,14 @@
 using DataAccess;
+using DataAccess.Enities;
 using DataAccess.Interfaces;
 using DataAccess.Repositories;
 using EMS.API.Helpers;
-using EMS.API.Models;
-using EMS.API.Services;
+using Services.Auth;
+using Services.Configurations;
+using Services.Contracts;
+using Services.Employees;
+using Services.Employers;
+using Shared.DTOs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +22,11 @@ builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<IEmployerRepository, EmployerRepository>();
 builder.Services.AddScoped<IContractRepository, ContractRepository>();
 builder.Services.AddSingleton(new JwtTokenService(jwtSettings));
+builder.Services.AddAutoMapper([typeof(LoginViewModel).Assembly, typeof(Employer).Assembly]);
+builder.Services.AddScoped<AuthenticationService>();
+builder.Services.AddScoped<IContractService, ContractService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IEmployerService, EmployerService>();
 
 builder.Services.AddControllers();
 

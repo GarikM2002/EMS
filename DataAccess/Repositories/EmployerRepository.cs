@@ -51,12 +51,11 @@ namespace DataAccess.Repositories
                 UPDATE Employers
                 SET FirstName = @FirstName,
                     LastName = @LastName,
-                    Email = @Email,
                     PhoneNumber = @PhoneNumber,
                     Department = @Department,
                     PasswordHash = @PasswordHash,
                     PasswordSalt = @PasswordSalt
-                WHERE Id = @Id";
+                WHERE Id = @Id";//Id and Email are unchanged!
             return await connection.ExecuteAsync(sql, employer);
         }
 

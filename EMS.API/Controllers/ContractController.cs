@@ -1,27 +1,27 @@
-﻿using DataAccess.Enities;
-using DataAccess.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Services.Contracts;
+using Shared.DTOs;
 
 namespace EMS.API.Controllers;
 
-[ApiController, Authorize]
+[ApiController]
 [Route("api/[controller]")]
-public class ContractsController(IContractRepository contractRepository) : ControllerBase
+public class ContractsController(IContractService contractService) : ControllerBase
 {
-    private readonly IContractRepository contractRepository = contractRepository;
+    private readonly IContractService contractService = contractService;
 
     [HttpGet]
     public async Task<IActionResult> GetAllContracts()
     {
-        var contracts = await contractRepository.GetAllContractsAsync();
+        var contracts = await contractService.GetAllContractsAsync();
+
         return Ok(contracts);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetContractById(int id)
     {
-        var contract = await contractRepository.GetContractByIdAsync(id);
+        var contract = await contractService.GetContractByIdAsync(id);
         if (contract == null)
         {
             return NotFound();
@@ -29,32 +29,32 @@ public class ContractsController(IContractRepository contractRepository) : Contr
         return Ok(contract);
     }
 
-    [HttpGet("employee/{employeeId}")]
-    public async Task<IActionResult> GetContractsByEmployeeId(int employeeId)
+    [HttpGet("employee/{employeeEmployersId}")]
+    public async Task<IActionResult> GetContractsByEmployeeId(int employeeEmployersId)
     {
-        var contracts = await contractRepository.GetContractsByEmployeeIdAsync(employeeId);
+        var contracts = await contractService.GetContractsByEmployeeEmployersIdAsync(employeeEmployersId);
         return Ok(contracts);
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateContract(Contract contract)
+    public async Task<IActionResult> CreateContract(ContractViewModel contract)
     {
-        var id = await contractRepository.CreateContractAsync(contract);
-        contract.Id = id;
-        return CreatedAtAction(nameof(GetContractById), new { id = id }, contract);
+        contract.Id = await contractService.CreateContractAsync(contract);
+
+        return CreatedAtAction(nameof(GetContractById), new { contract.Id }, contract);
     }
 
     [HttpPut]
-    public async Task<IActionResult> UpdateContract(Contract contract)
+    public async Task<IActionResult> UpdateContract(ContractViewModel contract)
     {
-        await contractRepository.UpdateContractAsync(contract);
+        await contractService.UpdateContractAsync(contract);
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteContract(int id)
     {
-        await contractRepository.DeleteContractAsync(id);
+        await contractService.DeleteContractAsync(id);
         return NoContent();
     }
 }

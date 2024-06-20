@@ -9,5 +9,6 @@ namespace DataAccess.Interfaces
         public Task<int> CreateEmployeeAsync(Employee employee);
         public Task<int> UpdateEmployeeAsync(Employee employee);
         public Task<int> DeleteEmployeeAsync(int id);
+        public Task<Employee?> GetEmployeeByEmailAsync(string email);
     }
 }

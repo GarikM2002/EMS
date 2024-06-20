@@ -43,10 +43,9 @@ public class EmployeeRepository(DataContext dbContext) : IEmployeeRepository
             UPDATE Employees
             SET FirstName = @FirstName,
                 LastName = @LastName,
-                Email = @Email,
                 PhoneNumber = @PhoneNumber,
                 Department = @Department
-            WHERE Id = @Id";
+            WHERE Id = @Id"; //Email and Id isn't changed
 
         return await connection.ExecuteAsync(sql, employee);
     }
@@ -57,5 +56,16 @@ public class EmployeeRepository(DataContext dbContext) : IEmployeeRepository
 
         string sql = "DELETE FROM Employees WHERE Id = @Id";
         return await connection.ExecuteAsync(sql, new { Id = id });
+    }
+
+    public async Task<Employee?> GetEmployeeByEmailAsync(string email)
+    {
+        using var connection = dbContext.CreateConnection();
+
+        var query = "SELECT * FROM Employees WHERE Email = @Email";
+        var parameters = new { Email = email };
+
+        var employee = await connection.QuerySingleOrDefaultAsync<Employee>(query, parameters);
+        return employee;
     }
 }

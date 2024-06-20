@@ -7,9 +7,8 @@ namespace DataAccess.Enities
         public string ContractType { get; set; }
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public decimal Salary { get; set; }
-        public int EmployeeId { get; set; }
-        public int EmployerId { get; set; }
+        public int EmployeeEmployersId { get; set; }
     }
 }

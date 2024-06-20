@@ -3,11 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EMS", "EMS\EMS.csproj", "{3288375E-0BFD-4B77-A8ED-6C2E97FD2D57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EMS", "EMS\EMS.csproj", "{3288375E-0BFD-4B77-A8ED-6C2E97FD2D57}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{94025761-F89B-4549-99DF-3F76DC56BEFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccess", "DataAccess\DataAccess.csproj", "{94025761-F89B-4549-99DF-3F76DC56BEFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EMS.API", "EMS.API\EMS.API.csproj", "{C23E0E02-49B9-43AC-ACB9-656A0C12EFB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EMS.API", "EMS.API\EMS.API.csproj", "{C23E0E02-49B9-43AC-ACB9-656A0C12EFB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{21835E3D-5E33-4C05-8408-4C6553B81098}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{328DF50D-B77A-43A6-8CAF-2A39896EF4F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +31,14 @@ Global
 		{C23E0E02-49B9-43AC-ACB9-656A0C12EFB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C23E0E02-49B9-43AC-ACB9-656A0C12EFB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C23E0E02-49B9-43AC-ACB9-656A0C12EFB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21835E3D-5E33-4C05-8408-4C6553B81098}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21835E3D-5E33-4C05-8408-4C6553B81098}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21835E3D-5E33-4C05-8408-4C6553B81098}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21835E3D-5E33-4C05-8408-4C6553B81098}.Release|Any CPU.Build.0 = Release|Any CPU
+		{328DF50D-B77A-43A6-8CAF-2A39896EF4F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{328DF50D-B77A-43A6-8CAF-2A39896EF4F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{328DF50D-B77A-43A6-8CAF-2A39896EF4F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{328DF50D-B77A-43A6-8CAF-2A39896EF4F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

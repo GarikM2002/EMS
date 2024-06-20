@@ -1,7 +1,7 @@
 ﻿using System.Text;
-using EMS.API.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Services.Configurations;
 
 namespace EMS.API.Helpers
 {
