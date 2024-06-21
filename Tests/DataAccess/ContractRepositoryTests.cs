@@ -6,20 +6,21 @@ using DataAccess.Interfaces;
 
 namespace Tests.DataAccess;
 
-[Collection(nameof(SqlServerCollection))]
-public class ContractRepositoryTests
+public class ContractRepositoryTests : IDisposable
 {
+    private readonly SqlServerDatabaseFixture fixture;
     private readonly DataContext context;
     private readonly IContractRepository repository;
 
-    public ContractRepositoryTests(SqlServerDatabaseFixture fixture)
+    public ContractRepositoryTests()
     {
+        fixture = new SqlServerDatabaseFixture();
         context = fixture.DataContext;
         repository = new ContractRepository(context);
     }
 
     [Theory]
-    [InlineData(2)]
+    [InlineData(3)]
     public async Task GetAllContractsAsync_ReturnsAllContracts(int expectedCount)
     {
         // Arrange
@@ -133,6 +134,11 @@ public class ContractRepositoryTests
 
         // Assert
         Assert.Null(contract);
+    }
+
+    public void Dispose()
+    {
+        fixture.Dispose();
     }
 }
 

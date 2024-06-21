@@ -6,24 +6,15 @@ using DataAccess.Interfaces;
 
 namespace Tests.DataAccess;
 
-
-[Collection(nameof(SqlServerCollection))]
-public class EmployeeRepositoryTests
+public class EmployeeRepositoryTests : IDisposable
 {
-    private static SqlServerDatabaseFixture? databaseFixture = null!;
+    private readonly SqlServerDatabaseFixture fixture;
     private readonly DataContext context;
     private readonly IEmployeeRepository repository;
 
-    public EmployeeRepositoryTests(SqlServerDatabaseFixture fixture)
+    public EmployeeRepositoryTests()
     {
-        if (databaseFixture is null)
-            databaseFixture = fixture;
-        else
-        {
-            databaseFixture.Dispose();
-            databaseFixture = new();
-        }
-
+        fixture = new SqlServerDatabaseFixture();
         context = fixture.DataContext;
         repository = new EmployeeRepository(context);
     }
@@ -170,6 +161,11 @@ public class EmployeeRepositoryTests
 
         Assert.NotNull(result);
         Assert.Equal(expectedId, result.Id);
+    }
+
+    public void Dispose()
+    {
+        fixture.Dispose();
     }
 }
 
