@@ -7,6 +7,7 @@ CREATE TABLE [dbo].[Employees] (
     [Email]       VARCHAR (100) NOT NULL,
     [PhoneNumber] VARCHAR (20)  NULL,
     [Department]  VARCHAR (50)  NULL,
+	[IsDeleted] Bit default 0 NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
     UNIQUE NONCLUSTERED ([Email] ASC)
 );
@@ -22,6 +23,7 @@ CREATE TABLE [dbo].[Employers] (
     [Department]   NVARCHAR (50)  NULL,
     [PasswordHash] NVARCHAR (200) NOT NULL,
     [PasswordSalt] NVARCHAR (200) NOT NULL,
+	[IsDeleted] Bit default 0 NOT NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
     UNIQUE NONCLUSTERED ([Email] ASC),
     CONSTRAINT [unique_email] UNIQUE NONCLUSTERED ([Email] ASC)
@@ -53,25 +55,29 @@ CREATE TABLE [dbo].[Contracts] (
 );
 
 -- Insert seed data into Employees
-INSERT INTO [dbo].[Employees] ([FirstName], [LastName], [Email], [PhoneNumber], [Department])
+INSERT INTO [dbo].[Employees] ([FirstName], [LastName], [Email], [PhoneNumber], [Department], [IsDeleted])
 VALUES 
-('John', 'Doe', 'john.doe@example.com', '1234567890', 'HR'),
-('Jane', 'Smith', 'jane.smith@example.com', '0987654321', 'Finance');
+('John', 'Doe', 'john.doe@example.com', '1234567890', 'HR', 0),
+('Jane', 'Smith', 'jane.smith@example.com', '0987654321', 'Finance', 0),
+('John', 'Doe', 'john.deleted@example.com', '1213567890', 'HR', 1);
 
 -- Insert seed data into Employers
-INSERT INTO [dbo].[Employers] ([FirstName], [LastName], [Email], [PhoneNumber], [Department], [PasswordHash], [PasswordSalt])
+INSERT INTO [dbo].[Employers] ([FirstName], [LastName], [Email], [PhoneNumber], [Department], [PasswordHash], [PasswordSalt], [IsDeleted])
 VALUES 
-('Alice', 'Johnson', 'alice.johnson@example.com', '1122334455', 'IT', 'hash1', 'salt1'),
-('Bob', 'Brown', 'bob.brown@example.com', '2233445566', 'Marketing', 'hash2', 'salt2');
+('Alice', 'Johnson', 'alice.johnson@example.com', '1122334455', 'IT', 'hash1', 'salt1', 0),
+('Bob', 'Brown', 'bob.brown@example.com', '2233445566', 'Marketing', 'hash2', 'salt2', 0),
+('Alice', 'Johnson', 'alice.johnsonDeleted@example.com', '1122334455', 'IT', 'hash1', 'salt1', 1);
 
 -- Insert seed data into EmployeeEmployers
 INSERT INTO [dbo].[EmployeeEmployers] ([EmployeeId], [EmployerId])
 VALUES 
 (1, 1),
+(2, 1),
 (2, 2);
 
 -- Insert seed data into Contracts
 INSERT INTO [dbo].[Contracts] ([ContractType], [StartDate], [EndDate], [Salary], [EmployeeEmployersId], [Description])
 VALUES 
 ('Full-Time', '2023-01-01', '2024-01-01', 60000, 1, 'Full-time employment contract for John Doe with Alice Johnson'),
+('Part-Time', '2023-02-01', NULL, 30000, 3, 'Part-time employment contract for Jane Smith with Bob Brown'),
 ('Part-Time', '2023-02-01', NULL, 30000, 2, 'Part-time employment contract for Jane Smith with Bob Brown');

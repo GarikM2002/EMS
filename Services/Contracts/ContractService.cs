@@ -38,7 +38,7 @@ public class ContractService(IContractRepository contractRepository, IMapper map
 
     public async Task<IEnumerable<ContractViewModel>> GetContractsByEmployeeEmployersIdAsync(int eeerID)
     {
-        var contracts = await contractRepository.GetContractsByEmployeeEmployersIdAsync(eeerID);
+        var contracts = await contractRepository.GetContractsByEmployerIdAsync(eeerID);
 
         return mapper.Map<IEnumerable<Contract>, IEnumerable<ContractViewModel>>(contracts);
     }

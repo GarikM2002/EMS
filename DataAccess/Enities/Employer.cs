@@ -11,5 +11,6 @@ namespace DataAccess.Enities
         public string Department { get; set; }
         public string PasswordHash { get; set; } // Store the hashed password
         public string PasswordSalt { get; set; } // Store the password salt for hashing
+        public bool IsDeleted { get; set; }
     }
 }

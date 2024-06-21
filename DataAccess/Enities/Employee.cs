@@ -10,5 +10,6 @@ namespace DataAccess.Enities
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string Department { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

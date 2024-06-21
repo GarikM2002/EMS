@@ -16,18 +16,17 @@ public class ContractRepository(DataContext dbContext) : IContractRepository
         return await connection.QueryAsync<Contract>(sql);
     }
 
-    public async Task<IEnumerable<Contract>> GetContractsByEmployeeEmployersIdAsync(int employeeEmployersId)
+    public async Task<IEnumerable<Contract>> GetContractsByEmployerIdAsync(int employerId)
     {
         using var connection = dbContext.CreateConnection();
 
         string sql = @"
-            SELECT c.Id, c.ContractType, c.Description, c.StartDate, c.EndDate,
-                c.Salary, c.EmployeeEmployersId 
-            FROM Contracts c
-            INNER JOIN EmployeeEmployers ee ON c.EmployeeEmployersId = ee.Id
-            WHERE ee.ID = @EmployeeEmployersId";
+            SELECT c.* FROM Employers e
+            INNER JOIN EmployeeEmployers ee ON e.Id = ee.EmployerId
+            INNER JOIN Contracts c ON ee.Id = c.EmployeeEmployersId
+            WHERE e.ID = @EmployerId";
 
-        return await connection.QueryAsync<Contract>(sql, new { EmployeeEmployersId = employeeEmployersId });
+        return await connection.QueryAsync<Contract>(sql, new { EmployerId = employerId });
     }
 
     public async Task<Contract?> GetContractByIdAsync(int id)
@@ -43,8 +42,8 @@ public class ContractRepository(DataContext dbContext) : IContractRepository
         using var connection = dbContext.CreateConnection();
 
         string sql = @"
-                INSERT INTO Contracts (EmployeeEmployersId, ContractType, StartDate, EndDate, Salary)
-                VALUES (@EmployeeEmployersId, @ContractType, @StartDate, @EndDate, @Salary);
+                INSERT INTO Contracts (EmployeeEmployersId, ContractType, StartDate, EndDate, Salary, Description)
+                VALUES (@EmployeeEmployersId, @ContractType, @StartDate, @EndDate, @Salary, @Description);
                 SELECT CAST(SCOPE_IDENTITY() as int)";
         return await connection.QuerySingleAsync<int>(sql, contract);
     }
@@ -59,7 +58,8 @@ public class ContractRepository(DataContext dbContext) : IContractRepository
                     ContractType = @ContractType,
                     StartDate = @StartDate,
                     EndDate = @EndDate,
-                    Salary = @Salary
+                    Salary = @Salary,
+                    Description = @Description
                 WHERE Id = @Id";
         return await connection.ExecuteAsync(sql, contract);
     }

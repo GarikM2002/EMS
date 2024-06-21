@@ -6,9 +6,7 @@ namespace Tests.DataAccess;
 public class SqlServerDatabaseFixture : IDisposable
 {
     public DataContext DataContext { get; private set; }
-    private readonly string connectionString = "Data Source=ps00024;Initial Catalog=EMSdb_Test;" +
-        "Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;" +
-        "Application Intent=ReadWrite;Multi Subnet Failover=False";
+    private readonly string connectionString = "Data Source=ps00024;Database=EMSdb_Test;Integrated Security=True;";
 
     public SqlServerDatabaseFixture()
     {
@@ -44,7 +42,7 @@ public class SqlServerDatabaseFixture : IDisposable
     }
 }
 
-[CollectionDefinition("SqlServer collection")]
+[CollectionDefinition(nameof(SqlServerCollection))]
 public class SqlServerCollection : ICollectionFixture<SqlServerDatabaseFixture>
 {
 }

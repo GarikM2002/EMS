@@ -12,7 +12,7 @@ namespace DataAccess.Repositories
         {
             using var connection = dbContext.CreateConnection();
             
-            string sql = "SELECT * FROM Employers";
+            string sql = "SELECT * FROM Employers WHERE IsDeleted = 0";
             return await connection.QueryAsync<Employer>(sql);
         }
 
@@ -20,7 +20,7 @@ namespace DataAccess.Repositories
         {
             using var connection = dbContext.CreateConnection();
             
-            string sql = "SELECT * FROM Employers WHERE Email = @Email";
+            string sql = "SELECT * FROM Employers WHERE Email = @Email AND IsDeleted = 0";
             return await connection.QuerySingleOrDefaultAsync<Employer>(sql, new { Email = email });
         }
 
@@ -28,7 +28,7 @@ namespace DataAccess.Repositories
         {
             using var connection = dbContext.CreateConnection();
             
-            string sql = "SELECT * FROM Employers WHERE Id = @Id";
+            string sql = "SELECT * FROM Employers WHERE Id = @Id AND IsDeleted = 0";
             return await connection.QuerySingleOrDefaultAsync<Employer>(sql, new { Id = id });
         }
 
@@ -63,7 +63,7 @@ namespace DataAccess.Repositories
         {
             using var connection = dbContext.CreateConnection();
             
-            string sql = "DELETE FROM Employers WHERE Id = @Id";
+            string sql = "UPDATE Employers SET IsDeleted = 1 WHERE Id = @Id;";
             return await connection.ExecuteAsync(sql, new { Id = id });
         }
     }
