@@ -1,10 +1,16 @@
 using EMS.Components;
+using EMS.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddHttpClient<ContractService>(client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7216");
+});
 
 var app = builder.Build();
 

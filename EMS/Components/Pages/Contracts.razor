@@ -1,0 +1,71 @@
+﻿@page "/contracts"
+@inject ContractService ContractService
+
+<h3>Contracts</h3>
+
+@if (contracts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Contract Type Id</th>
+                <th>Description</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Salary</th>
+                <th>EmployeeEmployersId</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var contract in contracts)
+            {
+                <tr>
+                    <td>@contract.Id</td>
+                    <td>@contract.ContractTypeId</td>
+                    <td>@contract.Description</td>
+                    <td>@contract.StartDate.ToShortDateString()</td>
+                    <td>@contract.EndDate?.ToShortDateString()</td>
+                    <td>@contract.Salary</td>
+                    <td>@contract.EmployeeEmployersId</td>
+                    <td>
+                        <button @onclick="() => EditContract(contract.Id)">Edit</button>
+                        <button @onclick="() => DeleteContract(contract.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button @onclick="CreateNewContract">Create New Contract</button>
+}
+
+@code {
+    private IEnumerable<ContractViewModel> contracts = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        contracts = await ContractService.GetAllContractsAsync();
+    }
+
+    private async Task CreateNewContract()
+    {
+        // Logic to create a new contract
+    }
+
+    private async Task EditContract(int id)
+    {
+        // Logic to edit a contract
+    }
+
+    private async Task DeleteContract(int id)
+    {
+        //await ContractService.DeleteContractAsync(id);
+        //contracts = await ContractService.GetAllContractsAsync();
+    }
+}
