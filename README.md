@@ -12,7 +12,6 @@ Data access layer -dapper, service layer -webAPI asp net, Presentation layer - B
 3.Validate for AuthController
 # 2.
 2.Blazor, mudBlazor fw
-3.When Employee added he added by Employer so the row must be inserted in the EmployeeEmployeers table
 
 # in the end...
 Check Api(Controllers) security, check UI()Blazor security.

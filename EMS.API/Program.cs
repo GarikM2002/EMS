@@ -1,32 +1,8 @@
-using DataAccess;
-using DataAccess.Enities;
-using DataAccess.Interfaces;
-using DataAccess.Repositories;
-using EMS.API.Helpers;
-using Services.Auth;
-using Services.Configurations;
-using Services.Contracts;
-using Services.Employees;
-using Services.Employers;
-using Shared.DTOs;
+using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>() ?? throw new Exception("JwtSettings wasn't found");
-builder.Services.AddJwtAuthentication(jwtSettings);
-builder.Services.AddAuthorization();
-
-builder.Services.AddScoped(provider =>
-    new DataContext(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new Exception("Connection wasn't found.")));
-builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<IEmployerRepository, EmployerRepository>();
-builder.Services.AddScoped<IContractRepository, ContractRepository>();
-builder.Services.AddSingleton(new JwtTokenService(jwtSettings));
-builder.Services.AddAutoMapper([typeof(LoginViewModel).Assembly, typeof(Employer).Assembly]);
-builder.Services.AddScoped<AuthenticationService>();
-builder.Services.AddScoped<IContractService, ContractService>();
-builder.Services.AddScoped<IEmployeeService, EmployeeService>();
-builder.Services.AddScoped<IEmployerService, EmployerService>();
+builder.Services.AddEMSServices(builder.Configuration);
 
 builder.Services.AddControllers();
 

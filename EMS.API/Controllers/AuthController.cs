@@ -1,5 +1,4 @@
-﻿using DataAccess.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Services.Auth;
 using Shared.DTOs;
 
@@ -7,10 +6,8 @@ namespace EMS.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(IEmployerRepository employerRepository,
-    AuthenticationService authenticationService) : ControllerBase
+public class AuthController(AuthenticationService authenticationService) : ControllerBase
 {
-    private readonly IEmployerRepository employerRepository = employerRepository;
     private readonly AuthenticationService authenticationService = authenticationService;
 
     [HttpPost("login")]
