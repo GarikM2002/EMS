@@ -18,7 +18,7 @@ namespace Tests.DataAccess
             Assert.Equal(expected.EndDate.HasValue ? expected.EndDate.Value.Date : expected.EndDate,
                         actual.EndDate.HasValue ? actual.EndDate.Value.Date : actual.EndDate);
             Assert.Equal(expected.StartDate.Date, actual.StartDate.Date);
-            Assert.Equal(expected.ContractType, actual.ContractType);
+            Assert.Equal(expected.ContractTypeId, actual.ContractTypeId);
         }
 
         public static void AssertEmployeesAreEqual(Employee expected, Employee actual)

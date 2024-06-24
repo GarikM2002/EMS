@@ -42,8 +42,8 @@ public class ContractRepository(DataContext dbContext) : IContractRepository
         using var connection = dbContext.CreateConnection();
 
         string sql = @"
-                INSERT INTO Contracts (EmployeeEmployersId, ContractType, StartDate, EndDate, Salary, Description)
-                VALUES (@EmployeeEmployersId, @ContractType, @StartDate, @EndDate, @Salary, @Description);
+                INSERT INTO Contracts (EmployeeEmployersId, ContractTypeId, StartDate, EndDate, Salary, Description)
+                VALUES (@EmployeeEmployersId, @ContractTypeId, @StartDate, @EndDate, @Salary, @Description);
                 SELECT CAST(SCOPE_IDENTITY() as int)";
         return await connection.QuerySingleAsync<int>(sql, contract);
     }
@@ -55,7 +55,7 @@ public class ContractRepository(DataContext dbContext) : IContractRepository
         string sql = @"
                 UPDATE Contracts
                 SET EmployeeEmployersId = @EmployeeEmployersId,
-                    ContractType = @ContractType,
+                    ContractTypeId = @ContractTypeId,
                     StartDate = @StartDate,
                     EndDate = @EndDate,
                     Salary = @Salary,

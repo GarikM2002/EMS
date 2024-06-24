@@ -10,7 +10,7 @@ public class EmployeeRepositoryTests : IDisposable
 {
     private readonly SqlServerDatabaseFixture fixture;
     private readonly DataContext context;
-    private readonly IEmployeeRepository repository;
+    private readonly EmployeeRepository repository;
 
     public EmployeeRepositoryTests()
     {
@@ -119,7 +119,7 @@ public class EmployeeRepositoryTests : IDisposable
         expected.Id = await repository.CreateOrAppendByEmployerAsync(expected, creatorId);
 
         var actual = await connection.QuerySingleAsync<Employee>(
-            "SELECT * FROM Employees WHERE Id = @Id", new { Id = expected.Id });
+            "SELECT * FROM Employees WHERE Id = @Id", new { expected.Id });
         var employeeEmployeesRow = new { EmployeeId = expected.Id, EmployerId = creatorId, };
 
         dynamic? res = await connection.QuerySingleOrDefaultAsync(
@@ -206,6 +206,7 @@ public class EmployeeRepositoryTests : IDisposable
     public void Dispose()
     {
         fixture.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
 

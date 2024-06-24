@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS Contracts;
+DROP TABLE IF EXISTS ContractTypes;
 DROP TABLE IF EXISTS EmployeeEmployers;
 DROP TABLE IF EXISTS Employees;
 DROP TABLE IF EXISTS Employers;

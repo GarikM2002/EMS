@@ -1,5 +1,3 @@
--- Drop and create the Employees table
-IF OBJECT_ID('Employees', 'U') IS NOT NULL DROP TABLE Employees;
 CREATE TABLE [dbo].[Employees] (
     [Id]          INT           IDENTITY (1, 1) NOT NULL,
     [FirstName]   VARCHAR (50)  NOT NULL,
@@ -12,8 +10,6 @@ CREATE TABLE [dbo].[Employees] (
     UNIQUE NONCLUSTERED ([Email] ASC)
 );
 
--- Drop and create the Employers table
-IF OBJECT_ID('Employers', 'U') IS NOT NULL DROP TABLE Employers;
 CREATE TABLE [dbo].[Employers] (
     [Id]           INT            IDENTITY (1, 1) NOT NULL,
     [FirstName]    NVARCHAR (50)  NOT NULL,
@@ -29,8 +25,6 @@ CREATE TABLE [dbo].[Employers] (
     CONSTRAINT [unique_email] UNIQUE NONCLUSTERED ([Email] ASC)
 );
 
--- Drop and create the EmployeeEmployers table
-IF OBJECT_ID('EmployeeEmployers', 'U') IS NOT NULL DROP TABLE EmployeeEmployers;
 CREATE TABLE [dbo].[EmployeeEmployers] (
     [Id]         INT IDENTITY (1, 1) NOT NULL,
     [EmployeeId] INT NULL,
@@ -40,44 +34,55 @@ CREATE TABLE [dbo].[EmployeeEmployers] (
     FOREIGN KEY ([EmployerId]) REFERENCES [dbo].[Employers] ([Id])
 );
 
--- Drop and create the Contracts table
-IF OBJECT_ID('Contracts', 'U') IS NOT NULL DROP TABLE Contracts;
+CREATE TABLE [dbo].[ContractTypes] (
+    [ID] INT IDENTITY(1, 1) NOT NULL,
+    [Name] NVARCHAR(50) NOT NULL,
+    [Description] NVARCHAR(4000) NULL,
+    CONSTRAINT PK_ContractTypes_ID PRIMARY KEY CLUSTERED ([ID] ASC),
+    CONSTRAINT UQ_ContractTypes_Name UNIQUE ([Name])
+);
+
 CREATE TABLE [dbo].[Contracts] (
     [Id]                  INT             IDENTITY (1, 1) NOT NULL,
-    [ContractType]        NVARCHAR (50)   NOT NULL,
+    [ContractTypeId]      INT             NOT NULL,
     [StartDate]           DATE            NOT NULL,
     [EndDate]             DATE            NULL,
     [Salary]              DECIMAL (18, 2) NOT NULL,
     [EmployeeEmployersId] INT             NOT NULL,
     [Description]         NVARCHAR (4000) NULL,
     PRIMARY KEY CLUSTERED ([Id] ASC),
-    FOREIGN KEY ([EmployeeEmployersId]) REFERENCES [dbo].[EmployeeEmployers] ([Id])
+    FOREIGN KEY ([EmployeeEmployersId]) REFERENCES [dbo].[EmployeeEmployers] ([Id]),
+    FOREIGN KEY ([ContractTypeId]) REFERENCES [dbo].[ContractTypes] ([Id])    
 );
 
--- Insert seed data into Employees
 INSERT INTO [dbo].[Employees] ([FirstName], [LastName], [Email], [PhoneNumber], [Department], [IsDeleted])
 VALUES 
 ('John', 'Doe', 'john.doe@example.com', '1234567890', 'HR', 0),
 ('Jane', 'Smith', 'jane.smith@example.com', '0987654321', 'Finance', 0),
 ('John', 'Doe', 'john.deleted@example.com', '1213567890', 'HR', 1);
 
--- Insert seed data into Employers
 INSERT INTO [dbo].[Employers] ([FirstName], [LastName], [Email], [PhoneNumber], [Department], [PasswordHash], [PasswordSalt], [IsDeleted])
 VALUES 
 ('Alice', 'Johnson', 'alice.johnson@example.com', '1122334455', 'IT', 'hash1', 'salt1', 0),
 ('Bob', 'Brown', 'bob.brown@example.com', '2233445566', 'Marketing', 'hash2', 'salt2', 0),
 ('Alice', 'Johnson', 'alice.johnsonDeleted@example.com', '1122334455', 'IT', 'hash1', 'salt1', 1);
 
--- Insert seed data into EmployeeEmployers
 INSERT INTO [dbo].[EmployeeEmployers] ([EmployeeId], [EmployerId])
 VALUES 
 (1, 1),
 (2, 1),
 (2, 2);
 
--- Insert seed data into Contracts
-INSERT INTO [dbo].[Contracts] ([ContractType], [StartDate], [EndDate], [Salary], [EmployeeEmployersId], [Description])
+INSERT INTO [dbo].[ContractTypes] ([Name], [Description])
 VALUES 
-('Full-Time', '2023-01-01', '2024-01-01', 60000, 1, 'Full-time employment contract for John Doe with Alice Johnson'),
-('Part-Time', '2023-02-01', NULL, 30000, 3, 'Part-time employment contract for Jane Smith with Bob Brown'),
-('Part-Time', '2023-02-01', NULL, 30000, 2, 'Part-time employment contract for Jane Smith with Bob Brown');
+('Full-Time', 'Full-time employment contract with benefits'),
+('Part-Time', 'Part-time employment contract without benefits'),
+('Temporary', 'Temporary contract for a specific duration'),
+('Internship', 'Internship contract for students or trainees'),
+('Freelance', 'Freelance contract for independent contractors');
+
+INSERT INTO [dbo].[Contracts] ([ContractTypeId], [StartDate], [EndDate], [Salary], [EmployeeEmployersId], [Description])
+VALUES 
+(1, '2023-01-01', '2024-01-01', 60000, 1, 'for John Doe with Alice Johnson'),
+(2, '2023-02-01', NULL, 30000, 3, 'for Jane Smith with Bob Brown about doing some thing'),
+(2, '2023-02-01', NULL, 30000, 2, 'for Jane Smith with Bob Brown');

@@ -10,7 +10,7 @@ public class ContractRepositoryTests : IDisposable
 {
     private readonly SqlServerDatabaseFixture fixture;
     private readonly DataContext context;
-    private readonly IContractRepository repository;
+    private readonly ContractRepository repository;
 
     public ContractRepositoryTests()
     {
@@ -76,7 +76,7 @@ public class ContractRepositoryTests : IDisposable
         // Arrange
         var expected = new Contract
         {
-            ContractType = "FullTime",
+            ContractTypeId = 1,
             Description = "Full-time contract",
             Salary = 50000,
             StartDate = DateTime.UtcNow,
@@ -102,7 +102,7 @@ public class ContractRepositoryTests : IDisposable
         var contract = new Contract
         {
             Id = 1,
-            ContractType = "FullTime",
+            ContractTypeId = 1,
             Description = "Full-time contract",
             Salary = 50000,
             StartDate = DateTime.UtcNow,
@@ -112,7 +112,8 @@ public class ContractRepositoryTests : IDisposable
 
         // Act
         var result = await repository.UpdateContractAsync(contract);
-        var actualContract = await connection.QuerySingleAsync<Contract>("Select * from Contracts where id = @id", new { Id = contract.Id });
+        var actualContract = await connection.QuerySingleAsync<Contract>("Select * from Contracts where id = @id",
+            new { contract.Id });
 
         // Assert
         Assert.Equal(1, result);
@@ -139,6 +140,7 @@ public class ContractRepositoryTests : IDisposable
     public void Dispose()
     {
         fixture.Dispose();
+        GC.SuppressFinalize(this);
     }
 }
 

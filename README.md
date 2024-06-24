@@ -10,7 +10,6 @@ Data access layer -dapper, service layer -webAPI asp net, Presentation layer - B
 # 1
 2.fluent validation
 3.Validate for AuthController
-4.implement AddEmployeeByEployer function
 # 2.
 2.Blazor, mudBlazor fw
 3.When Employee added he added by Employer so the row must be inserted in the EmployeeEmployeers table
