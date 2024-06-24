@@ -1,4 +1,6 @@
-﻿using Dapper;
+﻿using System.Data;
+using System.Data.SqlClient;
+using Dapper;
 using DataAccess.Enities;
 using DataAccess.Interfaces;
 
@@ -68,5 +70,34 @@ public class EmployeeRepository(DataContext dbContext) : IEmployeeRepository
 
         var employee = await connection.QuerySingleOrDefaultAsync<Employee>(query, parameters);
         return employee;
+    }
+
+    public async Task<int> CreateOrAppendByEmployerAsync(Employee employee, int employerId)
+    {
+        int? employeeId = (await GetEmployeeByEmailAsync(employee.Email))?.Id;
+        if (employeeId is null)
+            employeeId = await CreateEmployeeAsync(employee);
+
+        using var connection = dbContext.CreateConnection();
+
+        if (!await IsAlreadyExistedAsync(employeeId.Value, employerId, connection))
+        {
+            string sql = "INSERT INTO EmployeeEmployers (EmployeeId, EmployerId) VALUES (@EmployeeId, @EmployerId)";
+            await connection.ExecuteAsync(sql, new { EmployeeId = employeeId, EmployerId = employerId });
+        }
+
+        return employeeId.Value;
+    }
+
+    public static async Task<bool> IsAlreadyExistedAsync(int employeeId, int employerId, IDbConnection connection)
+    {
+        const string sql = @"
+            SELECT COUNT(*)
+            FROM EmployeeEmployers
+            WHERE EmployeeId = @employeeId AND EmployerId = @employerId;
+        ";
+
+        int count = await connection.QuerySingleAsync<int>(sql, new { employeeId, employerId });
+        return count > 0;
     }
 }

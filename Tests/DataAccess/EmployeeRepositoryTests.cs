@@ -95,6 +95,46 @@ public class EmployeeRepositoryTests : IDisposable
     }
 
     [Theory]
+    [InlineData("john.doenew@example.com")]
+    [InlineData("john.doenew@example.com", 2)]
+    [InlineData("jane.smith@example.com")]
+    [InlineData("jane.smith@example.com", 2)]
+    [InlineData("john.doe@example.com")]
+    [InlineData("john.doe@example.com", 2)]
+    public async Task CreateEmployeeByEmployerAsync_ReturnsNewEmployeeId(string email, int creatorId = 1)
+    {
+        // Arrange
+        var expected = new Employee
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            Email = email,
+            PhoneNumber = "1234567890",
+            Department = "HR"
+        };
+
+        using var connection = context.CreateConnection();
+
+        // Act
+        expected.Id = await repository.CreateOrAppendByEmployerAsync(expected, creatorId);
+
+        var actual = await connection.QuerySingleAsync<Employee>(
+            "SELECT * FROM Employees WHERE Id = @Id", new { Id = expected.Id });
+        var employeeEmployeesRow = new { EmployeeId = expected.Id, EmployerId = creatorId, };
+
+        dynamic? res = await connection.QuerySingleOrDefaultAsync(
+            "select * from EmployeeEmployers where employeeId = @Id1 and employerId = @Id2",
+            new { Id1 = employeeEmployeesRow.EmployeeId, Id2 = employeeEmployeesRow.EmployerId });
+
+        // Assert
+        //AssertHelper.AssertEmployeesAreEqual(expected, actual);
+        Assert.NotNull(res);
+        Assert.Equal(employeeEmployeesRow.EmployerId, res!.EmployerId);
+        Assert.Equal(employeeEmployeesRow.EmployeeId, res!.EmployeeId);
+        Assert.True(res.Id > 0);
+    }
+
+    [Theory]
     [InlineData(1)]
     [InlineData(2)]
     [InlineData(3)]

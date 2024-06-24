@@ -55,7 +55,7 @@ namespace DataAccess.Repositories
                     Department = @Department,
                     PasswordHash = @PasswordHash,
                     PasswordSalt = @PasswordSalt
-                WHERE Id = @Id";//Id and Email are unchanged!
+                WHERE Id = @Id";//Id, IsDeleted and Email are unchanged!
             return await connection.ExecuteAsync(sql, employer);
         }
 

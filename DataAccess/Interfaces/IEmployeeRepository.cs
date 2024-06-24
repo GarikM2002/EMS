@@ -7,6 +7,7 @@ namespace DataAccess.Interfaces
         public Task<IEnumerable<Employee>> GetAllEmployeesAsync();
         public Task<Employee?> GetEmployeeByIdAsync(int id);
         public Task<int> CreateEmployeeAsync(Employee employee);
+        public Task<int> CreateOrAppendByEmployerAsync(Employee employee, int employerId);
         public Task<int> UpdateEmployeeAsync(Employee employee);
         public Task<int> DeleteEmployeeAsync(int id);
         public Task<Employee?> GetEmployeeByEmailAsync(string email);

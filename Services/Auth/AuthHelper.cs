@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Services.Auth;
 
-static class AuthHelper
+public static class AuthHelper
 {
     public static (string hash, string salt) CreatePasswordHash(string password)
     {
