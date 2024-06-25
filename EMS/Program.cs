@@ -1,11 +1,14 @@
 using EMS.Components;
 using EMS.Services;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddMudServices();
 
 builder.Services.AddHttpClient<ContractService>(client =>
 {

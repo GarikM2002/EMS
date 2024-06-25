@@ -1,71 +1,69 @@
 ﻿@page "/contracts"
 @inject ContractService ContractService
+@rendermode InteractiveServer
 
-<h3>Contracts</h3>
+<MudContainer MaxWidth="MaxWidth.Medium">
+	<MudText Typo="Typo.h3">Contracts</MudText>
 
-@if (contracts == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Contract Type Id</th>
-                <th>Description</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>Salary</th>
-                <th>EmployeeEmployersId</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var contract in contracts)
-            {
-                <tr>
-                    <td>@contract.Id</td>
-                    <td>@contract.ContractTypeId</td>
-                    <td>@contract.Description</td>
-                    <td>@contract.StartDate.ToShortDateString()</td>
-                    <td>@contract.EndDate?.ToShortDateString()</td>
-                    <td>@contract.Salary</td>
-                    <td>@contract.EmployeeEmployersId</td>
-                    <td>
-                        <button @onclick="() => EditContract(contract.Id)">Edit</button>
-                        <button @onclick="() => DeleteContract(contract.Id)">Delete</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-
-    <button @onclick="CreateNewContract">Create New Contract</button>
-}
+	@if (contracts == null)
+	{
+		<MudProgressCircular Indeterminate="true" Color="Color.Primary" Size="Size.Large" />
+	}
+	else
+	{
+		<MudTable Items="contracts" Hover="true">
+			<HeaderContent>
+				<MudTh>Id</MudTh>
+				<MudTh>ContractTypeId</MudTh>
+				<MudTh>Description</MudTh>
+				<MudTh>Start Date</MudTh>
+				<MudTh>End Date</MudTh>
+				<MudTh>Salary</MudTh>
+				<MudTh>EmployeeEmployersId</MudTh>
+				<MudTh>Actions</MudTh>
+			</HeaderContent>
+			<RowTemplate>
+				<MudTd DataLabel="Id">@context.Id</MudTd>
+				<MudTd DataLabel="Contract Type Id">@context.ContractTypeId</MudTd>
+				<MudTd DataLabel="Description">@context.Description</MudTd>
+				<MudTd DataLabel="Start Date">@context.StartDate.ToShortDateString()</MudTd>
+				<MudTd DataLabel="End Date">@context.EndDate?.ToShortDateString()</MudTd>
+				<MudTd DataLabel="Salary">@context.Salary</MudTd>
+				<MudTd DataLabel="EmployeeEmployersId">@context.EmployeeEmployersId</MudTd>
+				<MudTd DataLabel="Actions">
+					<MudButton OnClick="async () => await EditContract(context.Id)" Color="Color.Primary"
+							   Variant="Variant.Filled" Class="my-3">Edit</MudButton>
+					<MudButton OnClick="async () => await DeleteContract(context.Id)" Color="Color.Secondary"
+							   Variant="Variant.Filled" Class="my-3">Delete</MudButton>
+				</MudTd>
+			</RowTemplate>
+		</MudTable>
+		<MudButton OnClick="async () => await CreateNewContract()" Color="Color.Primary" Variant="Variant.Filled"
+				   Class="mt-5">Create New Contract</MudButton>
+	}
+</MudContainer>
 
 @code {
-    private IEnumerable<ContractViewModel> contracts = null!;
+	private IEnumerable<ContractViewModel> contracts = null!;
 
-    protected override async Task OnInitializedAsync()
-    {
-        contracts = await ContractService.GetAllContractsAsync();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		contracts = (await ContractService.GetAllContractsAsync())!;
+	}
 
-    private async Task CreateNewContract()
-    {
-        // Logic to create a new contract
-    }
+	private async Task CreateNewContract()
+	{
+		// Logic to create a new contract
+	}
 
-    private async Task EditContract(int id)
-    {
-        // Logic to edit a contract
-    }
+	private async Task EditContract(int id)
+	{
+		// Logic to edit a contract
+	}
 
-    private async Task DeleteContract(int id)
-    {
-        //await ContractService.DeleteContractAsync(id);
-        //contracts = await ContractService.GetAllContractsAsync();
-    }
+	private async Task DeleteContract(int id)
+	{
+		await ContractService.DeleteContractAsync(id);
+		contracts = (await ContractService.GetAllContractsAsync())!;
+	}
 }
