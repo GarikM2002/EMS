@@ -1,38 +1,51 @@
 ﻿@page "/register"
 @inject AuthService AuthService
 @inject NavigationManager Navigation
+@inject IJSRuntime jsRuntime
 @rendermode InteractiveServer
 
-<MudPaper Width="400px" Class="pa-4 mx-auto mt-12">
-    <MudText Typo="Typo.h4" Class="mb-4">Register</MudText>
-    <MudForm @ref="form" @OnValidSubmit="HandleRegister">
-        <MudTextField @bind-Value="registerRequest.FirstName" Label="First Name" Required="true" />
-        <MudTextField @bind-Value="registerRequest.LastName" Label="Last Name" Required="true" />
-        <MudTextField @bind-Value="registerRequest.Email" Label="Email" Required="true" Type="email" />
-        <MudTextField @bind-Value="registerRequest.Password" Label="Password" Required="true" Type="password" />
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" Type="submit">Register</MudButton>
-    </MudForm>
-    @if (errorMessage != null)
-    {
-        <MudText Color="Color.Error" Class="mt-2">@errorMessage</MudText>
-    }
-</MudPaper>
+<MudGrid Justify="Justify.Center">
+	<MudItem xs="12" sm="12" md="8" lg="8">
+		<MudPaper Class="pa-4">
+			<MudText Typo="Typo.h4" Class="mb-4">Register</MudText>
+			<MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errorMessages">
+				<MudTextField @bind-Value="registerRequest.FirstName" Label="First Name" Required="true"
+							  InputType="InputType.Text" For="() => registerRequest.FirstName" />
+				<MudTextField @bind-Value="registerRequest.LastName" Label="Last Name" Required="true"
+							  InputType="InputType.Text" For="() => registerRequest.LastName" />
+				<MudTextField @bind-Value="registerRequest.Email" Label="Email" Required="true"
+							  InputType="InputType.Email" For="() => registerRequest.Email" />
+				<MudTextField @bind-Value="registerRequest.Password" Label="Password" Required="true"
+							  InputType="InputType.Password" For="() => registerRequest.Email" />
+				<MudButton Color="Color.Primary" Variant="Variant.Filled" Disabled="@(!success)"
+						   Class="ml-auto" OnClick="HandleRegister">Register</MudButton>
+			</MudForm>
+			@foreach (var e in errorMessages)
+			{
+				<MudText Color="Color.Error" Class="mt-2">@e</MudText>
+			}
+		</MudPaper>
+	</MudItem>
+</MudGrid>
 
 @code {
-    private MudForm form = null!;
-    private RegistrationViewModel registerRequest = new();
-    private string errorMessage = null!;
+	private MudForm form = null!;
+	private RegistrationViewModel registerRequest = new();
+	private string[] errorMessages = [];
+	private bool success;
 
-    private async Task HandleRegister()
-    {
-        var response = await AuthService.RegisterAsync(registerRequest);
-        if (response.IsSuccessStatusCode)
-        {
-            Navigation.NavigateTo("/login");
-        }
-        else
-        {
-            errorMessage = "Registration failed";
-        }
-    }
+	private async Task HandleRegister()
+	{
+		var response = await AuthService.RegisterAsync(registerRequest);
+		if (response.IsSuccessStatusCode)
+		{
+			await jsRuntime.InvokeVoidAsync("alert", "Registration successful!");
+
+			Navigation.NavigateTo("/login");
+		}
+		else
+		{
+			errorMessages = ["Registration failed", await response.Content.ReadAsStringAsync()];
+		}
+	}
 }

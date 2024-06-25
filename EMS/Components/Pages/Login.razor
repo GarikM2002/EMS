@@ -8,7 +8,7 @@
 			<MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
 				<MudTextField @bind-Value="model.Email" T="@string" Label="Email" For="@(() => model.Email)"
 							  Required="true" RequiredError="Email is required!" />
-				<MudTextField @bind-Value="modelsd.Password" T="@string" Label="Password" For="@(() => model.Password)"
+				<MudTextField @bind-Value="model.Password" T="@string" Label="Password" For="@(() => model.Password)"
 							  HelperText="Enter your password" InputType="InputType.Password" Required="true"
 							  RequiredError="Password is required!" />
 				<MudItem Class="d-flex align-items-center justify-content-between mt-4">
