@@ -1,9 +1,10 @@
 ﻿@page "/login"
 @inject AuthService AuthService
 @inject NavigationManager Navigation
+@inject IJSRuntime jsRuntime
 
 <MudGrid Justify="Justify.Center">
-	<MudItem xs="12" sm="12" md="8" lg="8">
+	<MudItem xs="12" md="8">
 		<MudPaper Class="pa-4">
 			<MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
 				<MudTextField @bind-Value="model.Email" T="@string" Label="Email" For="@(() => model.Email)"
@@ -40,7 +41,8 @@
 		{
 			var token = await response.Content.ReadAsStringAsync();
 			// Store the token in local storage
-			Console.WriteLine(token);
+			await jsRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+			await jsRuntime.InvokeVoidAsync("alert", token);
 
 			Navigation.NavigateTo("/");
 		}

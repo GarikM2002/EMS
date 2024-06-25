@@ -17,5 +17,7 @@ Data access layer -dapper, service layer -webAPI asp net, Presentation layer - B
     3.Add Users
     4.Add Contracts
 
+3.blazor lifecycle events
+4.employees table, add serching in the table. pagination
 # in the end...
 Check Api(Controllers) security, check UI()Blazor security.
