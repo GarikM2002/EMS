@@ -10,10 +10,9 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddMudServices();
 
-builder.Services.AddHttpClient<ContractService>(client =>
-{
-    client.BaseAddress = new Uri("https://localhost:7216");
-});
+const string EMSApi = "https://localhost:7216";
+builder.Services.AddHttpClient<ContractService>(client => client.BaseAddress = new Uri(EMSApi));
+builder.Services.AddHttpClient<AuthService>(client => client.BaseAddress = new Uri(EMSApi));
 
 var app = builder.Build();
 

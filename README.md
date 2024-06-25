@@ -12,6 +12,10 @@ Data access layer -dapper, service layer -webAPI asp net, Presentation layer - B
 3.Validate for AuthController
 # 2.
 2.Blazor, mudBlazor fw
+    1.Login page
+    2.Register Page
+    3.Add Users
+    4.Add Contracts
 
 # in the end...
 Check Api(Controllers) security, check UI()Blazor security.

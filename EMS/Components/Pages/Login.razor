@@ -1,38 +1,58 @@
 ﻿@page "/login"
 @inject AuthService AuthService
 @inject NavigationManager Navigation
-@rendermode InteractiveServer
 
-<MudPaper Width="400px" Class="pa-4 mx-auto mt-12">
-    <MudText Typo="Typo.h4" Class="mb-4">Login</MudText>
-    <MudForm @ref="form" @OnValidSubmit="HandleLogin">
-        <MudTextField @bind-Value="loginRequest.Email" Label="Email" Required="true" Type="email" />
-        <MudTextField @bind-Value="loginRequest.Password" Label="Password" Required="true" Type="password" />
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" Type="submit">Login</MudButton>
-    </MudForm>
-    @if (errorMessage != null)
-    {
-        <MudText Color="Color.Error" Class="mt-2">@errorMessage</MudText>
-    }
-</MudPaper>
+<MudGrid Justify="Justify.Center">
+	<MudItem xs="12" sm="12" md="8" lg="8">
+		<MudPaper Class="pa-4">
+			<MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+				<MudTextField @bind-Value="model.Email" T="@string" Label="Email" For="@(() => model.Email)"
+							  Required="true" RequiredError="Email is required!" />
+				<MudTextField @bind-Value="modelsd.Password" T="@string" Label="Password" For="@(() => model.Password)"
+							  HelperText="Enter your password" InputType="InputType.Password" Required="true"
+							  RequiredError="Password is required!" />
+				<MudItem Class="d-flex align-items-center justify-content-between mt-4">
+					<MudButton Variant="Variant.Filled" Color="Color.Primary"
+							   Disabled="@(!success)" Class="ml-auto" OnClick="OnLogin">
+						Login
+					</MudButton>
+				</MudItem>
+			</MudForm>
+			@foreach (var e in errors)
+			{
+				<MudText Color="Color.Error" Class="mt-2">@e</MudText>
+			}
+		</MudPaper>
+	</MudItem>
+</MudGrid>
 
 @code {
-    private MudForm form;
-    private LoginViewModel loginRequest = new();
-    private string errorMessage;
+	MudForm form = null!;
+	bool success;
+	string[] errors = [];
+	LoginViewModel model = new LoginViewModel();
 
-    private async Task HandleLogin()
-    {
-        var response = await AuthService.LoginAsync(loginRequest);
-        if (response.IsSuccessStatusCode)
-        {
-            var token = await response.Content.ReadAsStringAsync();
-            // Store the token as needed, e.g., in local storage
-            Navigation.NavigateTo("/");
-        }
-        else
-        {
-            errorMessage = "Invalid login attempt";
-        }
-    }
+	private async Task OnLogin()
+	{
+		errors = []; // Clear previous error message
+		var response = await AuthService.LoginAsync(model);
+		if (response.IsSuccessStatusCode)
+		{
+			var token = await response.Content.ReadAsStringAsync();
+			// Store the token in local storage
+			Console.WriteLine(token);
+
+			Navigation.NavigateTo("/");
+		}
+		else
+		{
+			errors = ["Invalid login attempt. Please check your credentials and try again."];
+		}
+	}
+
+	private async Task<bool> ValidateForm()
+	{
+		await form.Validate();
+		return success;
+	}
 }

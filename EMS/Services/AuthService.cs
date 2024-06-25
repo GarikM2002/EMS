@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
-using Shared.DTOs;
+﻿using Shared.DTOs;
 
 namespace EMS.Services;
 
