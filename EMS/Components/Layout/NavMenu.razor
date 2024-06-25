@@ -1,25 +1,18 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">EMS</a>
-    </div>
-</div>
+﻿<MudNavMenu Class="mt-16">
+    <MudNavLink Href="/" Match="NavLinkMatch.All" Class="mud-nav-link">
+        <MudIcon Icon="@Icons.Material.Filled.Home" Class="mud-icon" /> Home
+    </MudNavLink>
+    <MudNavLink Href="/login" Match="NavLinkMatch.Prefix" Class="mud-nav-link">
+        <MudIcon Icon="@Icons.Material.Filled.Login" Class="mud-icon" /> Login
+    </MudNavLink>
+    <MudNavLink Href="/register" Match="NavLinkMatch.Prefix" Class="mud-nav-link">
+        <MudIcon Icon="@Icons.Material.Filled.PersonAdd" Class="mud-icon" /> Register
+    </MudNavLink>
+    <MudNavLink Href="/contracts" Match="NavLinkMatch.Prefix" Class="mud-nav-link">
+        <MudIcon Icon="@Icons.Material.Filled.Description" Class="mud-icon" /> Contracts
+    </MudNavLink>
+</MudNavMenu>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
-
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="contracts">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Contracts
-            </NavLink>
-        </div>
-
-    </nav>
-</div>
-
+@code {
+    // Add any code if needed
+}
