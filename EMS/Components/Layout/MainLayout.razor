@@ -5,27 +5,40 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Color="Color.Primary">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit"
-        Edge="Edge.Start" OnClick="ToggleDrawer" />
-        <MudText Typo="Typo.h6">EMS Application</MudText>
-    </MudAppBar>
+	<MudAppBar Color="Color.Primary">
+		<MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit"
+					   Edge="Edge.Start" OnClick="ToggleDrawer" />
+		<MudText Typo="Typo.h6">EMS Application</MudText>
+	</MudAppBar>
 
-    <MudDrawer @bind-Open="@drawerOpen">
-        <NavMenu/>
-    </MudDrawer>
+	<MudDrawer @bind-Open="@drawerOpen">
+		<NavMenu @ref="navMenu" />
+	</MudDrawer>
 
-    <MudMainContent>
-        @Body
-    </MudMainContent>
+	<MudMainContent>
+		<CascadingValue Value=LoginPassed>
+			@Body
+		</CascadingValue>
+	</MudMainContent>
 </MudLayout>
 
 @code {
-    private bool drawerOpen = true;
+	private NavMenu navMenu = null!;
+	private bool drawerOpen = true;
 
-    private void ToggleDrawer()
-    {
-        drawerOpen = !drawerOpen;
-    }
+	public EventCallback LoginPassed => EventCallback.Factory.Create(this, OnLoginPassed);
+
+	private void ToggleDrawer()
+	{
+		drawerOpen = !drawerOpen;
+	}
+
+	private async Task OnLoginPassed()
+	{
+		if (navMenu != null)
+		{
+			await navMenu.HandleLoginAsync();
+		}
+	}
 }
 

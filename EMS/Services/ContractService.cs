@@ -2,11 +2,11 @@
 
 namespace EMS.Services;
 
-public class ContractService(HttpClient httpClient)
+public class ContractService(EMSHttpClient httpClient)
 {
-    private readonly HttpClient httpClient = httpClient;
+	private readonly EMSHttpClient httpClient = httpClient;
 
-    public async Task<IEnumerable<ContractViewModel>?> GetAllContractsAsync()
+	public async Task<IEnumerable<ContractViewModel>?> GetAllContractsAsync()
     {
         return await httpClient.GetFromJsonAsync<IEnumerable<ContractViewModel>>("/api/contracts");
     }

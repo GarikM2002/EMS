@@ -1,18 +1,51 @@
-﻿<MudNavMenu Class="mt-16">
-    <MudNavLink Href="/" Match="NavLinkMatch.All" Class="mud-nav-link">
-        <MudIcon Icon="@Icons.Material.Filled.Home" Class="mud-icon" /> Home
-    </MudNavLink>
-    <MudNavLink Href="/login" Match="NavLinkMatch.Prefix" Class="mud-nav-link">
-        <MudIcon Icon="@Icons.Material.Filled.Login" Class="mud-icon" /> Login
-    </MudNavLink>
-    <MudNavLink Href="/register" Match="NavLinkMatch.Prefix" Class="mud-nav-link">
-        <MudIcon Icon="@Icons.Material.Filled.PersonAdd" Class="mud-icon" /> Register
-    </MudNavLink>
-    <MudNavLink Href="/contracts" Match="NavLinkMatch.Prefix" Class="mud-nav-link">
-        <MudIcon Icon="@Icons.Material.Filled.Description" Class="mud-icon" /> Contracts
-    </MudNavLink>
+﻿@inject AuthService auth
+
+<MudNavMenu Class="mt-16">
+	<MudNavLink Href="/" Match="NavLinkMatch.All" Class="mud-nav-link">
+		<MudIcon Icon="@Icons.Material.Filled.Home" Class="mud-icon" /> Home
+	</MudNavLink>
+	@if (!isAuthenticated)
+	{
+		<MudNavLink Href="/login" Match="NavLinkMatch.Prefix" Class="mud-nav-link">
+			<MudIcon Icon="@Icons.Material.Filled.Login" Class="mud-icon" /> Login
+		</MudNavLink>
+		<MudNavLink Href="/register" Match="NavLinkMatch.Prefix" Class="mud-nav-link">
+			<MudIcon Icon="@Icons.Material.Filled.PersonAdd" Class="mud-icon" /> Register
+		</MudNavLink>
+	}
+	else
+	{
+		<MudButton OnClick="LogoutAsync" Class="mud-nav-link ml-7">
+			<MudIcon Icon="@Icons.Material.Filled.DoorBack" Class="mud-icon" /> Log out
+		</MudButton>
+		<MudNavLink Href="/contracts" Match="NavLinkMatch.Prefix" Class="mud-nav-link">
+			<MudIcon Icon="@Icons.Material.Filled.Description" Class="mud-icon" /> Contracts
+		</MudNavLink>
+	}
 </MudNavMenu>
 
 @code {
-    // Add any code if needed
+	bool isAuthenticated;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		Console.WriteLine("\n\nFirstrender = " + firstRender + "\n\n");
+		if (firstRender)
+		{
+			await HandleLoginAsync();
+		}
+	}
+
+	public async Task HandleLoginAsync()
+	{
+		isAuthenticated = await auth.IsUserAuthenticatedAsync();
+		Console.WriteLine(isAuthenticated);
+		StateHasChanged();
+	}
+
+	public async Task LogoutAsync()
+	{
+		await auth.LogoutAsync();
+		await HandleLoginAsync();
+	}
 }

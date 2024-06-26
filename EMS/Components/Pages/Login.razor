@@ -1,7 +1,9 @@
 ﻿@page "/login"
+@using System.Text.Json
+@inject IJSRuntime jsRuntime
 @inject AuthService AuthService
 @inject NavigationManager Navigation
-@inject IJSRuntime jsRuntime
+@inject LocalStorageService localStorageService
 
 <MudGrid Justify="Justify.Center">
 	<MudItem xs="12" md="8">
@@ -33,16 +35,24 @@
 	string[] errors = [];
 	LoginViewModel model = new LoginViewModel();
 
+	[CascadingParameter]
+	public EventCallback LoginPassed { get; set; }
+
 	private async Task OnLogin()
 	{
 		errors = []; // Clear previous error message
 		var response = await AuthService.LoginAsync(model);
+
 		if (response.IsSuccessStatusCode)
 		{
-			var token = await response.Content.ReadAsStringAsync();
+			var token = (await response.Content.ReadAsStringAsync());
+			token = JsonSerializer.Deserialize<Dictionary<string, string>>(token)?["token"];
+			
 			// Store the token in local storage
-			await jsRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", token);
+			await localStorageService.SetAuthTokenAsync(token!);
+
 			await jsRuntime.InvokeVoidAsync("alert", token);
+			await LoginPassed.InvokeAsync();
 
 			Navigation.NavigateTo("/");
 		}

@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.JSInterop;
-using Shared.DTOs;
+﻿using Shared.DTOs;
 
 namespace EMS.Services;
 
-public class AuthService(HttpClient httpClient, IJSRuntime jsRuntime)
+public class AuthService(EMSHttpClient httpClient, LocalStorageService localStorageService)
 {
-	private readonly HttpClient httpClient = httpClient;
-	private readonly IJSRuntime jsRuntime = jsRuntime;
+	private readonly EMSHttpClient httpClient = httpClient;
+	private readonly LocalStorageService localStorageService = localStorageService;
 
 	public async Task<HttpResponseMessage> LoginAsync(LoginViewModel loginRequest)
 	{
@@ -19,18 +17,20 @@ public class AuthService(HttpClient httpClient, IJSRuntime jsRuntime)
 		return await httpClient.PostAsJsonAsync("/api/Auth/register", registerRequest);
 	}
 
-	public async Task<bool> IsUserAuthenticated()
+	public async Task<bool> IsUserAuthenticatedAsync()
 	{
-		var token = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
-		if (string.IsNullOrEmpty(token))
+		var res = await httpClient.GetAsync("/api/Auth");
+		if (res.IsSuccessStatusCode)
 		{
-			return false;
+			return true;
 		}
 		return false;
 	}
 
 	public async Task LogoutAsync()
 	{
-		await jsRuntime.InvokeVoidAsync("localStorage.removeItem", "authToken");
+		await localStorageService.SetAuthTokenAsync("Out");
 	}
+
+
 }
