@@ -35,9 +35,6 @@
 	string[] errors = [];
 	LoginViewModel model = new LoginViewModel();
 
-	[CascadingParameter]
-	public EventCallback LoginPassed { get; set; }
-
 	private async Task OnLogin()
 	{
 		errors = []; // Clear previous error message
@@ -52,9 +49,8 @@
 			await localStorageService.SetAuthTokenAsync(token!);
 
 			await jsRuntime.InvokeVoidAsync("alert", token);
-			await LoginPassed.InvokeAsync();
 
-			Navigation.NavigateTo("/");
+			Navigation.NavigateTo("/", true);
 		}
 		else
 		{

@@ -12,33 +12,20 @@
 	</MudAppBar>
 
 	<MudDrawer @bind-Open="@drawerOpen">
-		<NavMenu @ref="navMenu" />
+		<NavMenu />
 	</MudDrawer>
 
 	<MudMainContent>
-		<CascadingValue Value=LoginPassed>
-			@Body
-		</CascadingValue>
+		@Body
 	</MudMainContent>
 </MudLayout>
 
 @code {
-	private NavMenu navMenu = null!;
 	private bool drawerOpen = true;
-
-	public EventCallback LoginPassed => EventCallback.Factory.Create(this, OnLoginPassed);
 
 	private void ToggleDrawer()
 	{
 		drawerOpen = !drawerOpen;
-	}
-
-	private async Task OnLoginPassed()
-	{
-		if (navMenu != null)
-		{
-			await navMenu.HandleLoginAsync();
-		}
 	}
 }
 

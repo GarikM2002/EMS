@@ -30,22 +30,26 @@
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		Console.WriteLine("\n\nFirstrender = " + firstRender + "\n\n");
+		
 		if (firstRender)
 		{
 			await HandleLoginAsync();
+			StateHasChanged();
 		}
 	}
 
 	public async Task HandleLoginAsync()
 	{
 		isAuthenticated = await auth.IsUserAuthenticatedAsync();
-		Console.WriteLine(isAuthenticated);
-		StateHasChanged();
+
+		Console.WriteLine("isAuthenticated = " + isAuthenticated);
 	}
 
 	public async Task LogoutAsync()
 	{
 		await auth.LogoutAsync();
 		await HandleLoginAsync();
+
+		Console.WriteLine("Logout");
 	}
 }
