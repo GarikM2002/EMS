@@ -17,6 +17,13 @@ public class AuthService(EMSHttpClient httpClient, LocalStorageService localStor
 		return await httpClient.PostAsJsonAsync("/api/Auth/register", registerRequest);
 	}
 
+	public async Task<JWTUserData?> GetJWTUserDataAsync()
+	{
+		var res = await httpClient.GetFromJsonAsync<JWTUserData?>("/api/Auth/GetUserData");
+
+		return res;
+	}
+
 	public async Task<bool> IsUserAuthenticatedAsync()
 	{
 		var res = await httpClient.GetAsync("/api/Auth");

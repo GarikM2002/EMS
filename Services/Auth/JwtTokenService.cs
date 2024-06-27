@@ -18,7 +18,8 @@ namespace Services.Auth
             {
                 new Claim(JwtRegisteredClaimNames.Sub, employer.Id.ToString()),
                 new Claim(ClaimTypes.Name, employer.FirstName),
-                new Claim(ClaimTypes.Email, employer.Email)
+                new Claim(ClaimTypes.Email, employer.Email),
+                new Claim(ClaimTypes.NameIdentifier, employer.Id.ToString()),
             };
 
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings.Secret));

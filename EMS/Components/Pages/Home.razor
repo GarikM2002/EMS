@@ -1,9 +1,36 @@
 ﻿@page "/"
 
+@inject AuthService Auth
+
 <PageTitle>Home</PageTitle>
 <MudGrid Justify="Justify.Center">
 	<MudItem>
-		<MudText Class="my-4" Typo="Typo.h2">Hello world</MudText>
-		<MudText Class="my-3" Typo="Typo.body1">Welcome to your new app.</MudText>
+		@if (user is null)
+		{
+			<MudText Class="my-4" Typo="Typo.h2">Hello world</MudText>
+			<MudText Class="my-3" Typo="Typo.body1">Welcome to your new app.</MudText>
+		}
+		else
+		{
+			<MudText Class="my-4" Typo="Typo.h2">Hello @user.UserName </MudText>
+			<MudText Class="my-3" Typo="Typo.body1">it's you @user.Email id -> @user.Id</MudText>
+		}
 	</MudItem>
 </MudGrid>
+
+@code
+{
+	JWTUserData? user;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (!firstRender)
+			return;
+
+		if (await Auth.IsUserAuthenticatedAsync())
+		{
+			user = await Auth.GetJWTUserDataAsync();
+			StateHasChanged();
+		}
+	}
+}

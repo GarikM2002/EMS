@@ -1,15 +1,20 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Auth;
+using Services.Employees;
 using Shared.DTOs;
 
 namespace EMS.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController(AuthenticationService authenticationService) : ControllerBase
+public class AuthController(AuthenticationService authenticationService,
+	IEmployeeService employeeService) : ControllerBase
 {
 	private readonly AuthenticationService authenticationService = authenticationService;
+	private readonly IEmployeeService employeeService = employeeService;
 
 	[HttpPost("login")]
 	public async Task<IActionResult> Login(LoginViewModel loginRequest)
@@ -41,5 +46,18 @@ public class AuthController(AuthenticationService authenticationService) : Contr
 	public IActionResult IsAuthenticated()
 	{
 		return Ok();
+	}
+
+	[HttpGet("GetUserData"), Authorize]
+	public IActionResult GetUserDataFromJWT()
+	{
+		var user = new JWTUserData();
+		{
+			user.Id = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+			user.UserName = User.FindFirstValue(ClaimTypes.Name);
+			user.Email = User.FindFirstValue(ClaimTypes.Email);
+		};
+
+		return Ok(user);
 	}
 }
