@@ -1,0 +1,70 @@
+﻿@page "/contracts/edit/{id:int}"
+@inject NavigationManager Navigation
+@inject ContractService ContractService
+@inject ContractViewModelValidator Validator
+
+<MudGrid Justify="Justify.Center">
+	<MudItem xs="12" md="8">
+		<MudText Typo="Typo.h4">Edit Contract</MudText>
+		<MudPaper Class="pa-4">
+			<MudForm Model="contract" @ref="form" Validation="Validator.ValidateValue">
+				<MudTextField @bind-Value="contract.ContractTypeId" Label="Contract Type Id*"
+							  For="() => contract.ContractTypeId" Immediate="true" />
+				<MudTextField @bind-Value="contract.Description" Label="Description*"
+							  For="() => contract.Description" Immediate="true" />
+				<MudDatePicker PickerVariant="PickerVariant.Dialog" @bind-Date="@contract.StartDate"
+							   Label="Start Date*" For="() => contract.StartDate" />
+				<MudDatePicker PickerVariant="PickerVariant.Dialog" @bind-Date="@contract.EndDate"
+							   Label="End Date" For="() => contract.EndDate" />
+				<MudTextField @bind-Value="contract.Salary" Label="Salary*"
+							  For="() => contract.Salary" Immediate="true" />
+				<MudTextField @bind-Value="contract.EmployeeEmployersId" Label="Employee Employers Id*"
+							  For="() => contract.EmployeeEmployersId" Immediate="true" />
+				<MudButton Class="mt-4"
+						   Color="Color.Primary" Variant="Variant.Filled" OnClick="HandleEditContract">
+					Update
+				</MudButton>
+				@if (errors is not null)
+				{
+					<MudText Color="Color.Error" Class="mt-2">@errors</MudText>
+				}
+			</MudForm>
+		</MudPaper>
+	</MudItem>
+</MudGrid>
+
+@code {
+	[Parameter]
+	public int Id { get; set; }
+
+	private MudForm form = null!;
+	private ContractViewModel contract = new();
+	string? errors;
+
+	protected override async Task OnInitializedAsync()
+	{
+		contract = (await ContractService.GetContractByIdAsync(Id))!;
+		if (contract == null)
+		{
+			Navigation.NavigateTo("/contracts");
+		}
+	}
+
+	private async Task HandleEditContract()
+	{
+		await form.Validate();
+		if (!form.IsValid)
+			return;
+
+		var response = await ContractService.UpdateContractAsync(contract);
+		if (response.IsSuccessStatusCode)
+		{
+			Navigation.NavigateTo("/contracts");
+		}
+		else
+		{
+			//errors = await response.Content.ReadAsStringAsync();
+			errors = "Something's wrong, please try again";
+		}
+	}
+}

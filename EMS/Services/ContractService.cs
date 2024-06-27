@@ -23,7 +23,7 @@ public class ContractService(EMSHttpClient httpClient)
 
     public async Task<HttpResponseMessage> UpdateContractAsync(ContractViewModel contract)
     {
-        return await httpClient.PutAsJsonAsync($"/api/contracts/{contract.Id}", contract);
+        return await httpClient.PutAsJsonAsync($"/api/contracts", contract);
     }
 
     public async Task<HttpResponseMessage> DeleteContractAsync(int id)

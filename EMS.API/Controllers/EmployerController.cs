@@ -1,4 +1,5 @@
 ﻿using DataAccess.Enities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Services.Employees;
 using Services.Employers;
@@ -6,7 +7,7 @@ using Shared.DTOs;
 
 namespace EMS.API.Controllers;
 
-[ApiController]
+[ApiController, Authorize]
 [Route("api/[controller]")]
 public class EmployerController(IEmployerService employerService) : ControllerBase
 {

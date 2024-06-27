@@ -7,16 +7,7 @@ project - employer - employee, Employment mng system,
 Data access layer -dapper, service layer -webAPI asp net, Presentation layer - Blazor server.
 
 # //To do
-# 1
-2.fluent validation
-3.Validate for AuthController
 # 2.
-2.Blazor, mudBlazor fw
-    3.Add Users
-    4.Add Contracts
-
-3.blazor lifecycle events
-4.employees table, add serching in the table. pagination
-5.Contracts table
+4.Contracts table, add serching in the table. pagination
 # in the end...
 Check Api(Controllers) security, check UI()Blazor security.

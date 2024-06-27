@@ -27,19 +27,19 @@
 				<MudTd DataLabel="Id">@context.Id</MudTd>
 				<MudTd DataLabel="Contract Type Id">@context.ContractTypeId</MudTd>
 				<MudTd DataLabel="Description">@context.Description</MudTd>
-				<MudTd DataLabel="Start Date">@context.StartDate.ToShortDateString()</MudTd>
+				<MudTd DataLabel="Start Date">@context.StartDate?.ToShortDateString()</MudTd>
 				<MudTd DataLabel="End Date">@context.EndDate?.ToShortDateString()</MudTd>
 				<MudTd DataLabel="Salary">@context.Salary</MudTd>
 				<MudTd DataLabel="EmployeeEmployersId">@context.EmployeeEmployersId</MudTd>
 				<MudTd DataLabel="Actions">
-					<MudButton OnClick="async () => await EditContract(context.Id)" Color="Color.Primary"
+					<MudButton OnClick="() => NavigateToEditContract(context.Id)" Color="Color.Primary"
 							   Variant="Variant.Filled" Class="my-3">Edit</MudButton>
 					<MudButton OnClick="async () => await DeleteContract(context.Id)" Color="Color.Secondary"
 							   Variant="Variant.Filled" Class="my-3">Delete</MudButton>
 				</MudTd>
 			</RowTemplate>
 		</MudTable>
-		<MudButton OnClick="async () => await CreateNewContract()" Color="Color.Primary" Variant="Variant.Filled"
+		<MudButton OnClick="NavigateToCreateContract" Color="Color.Primary" Variant="Variant.Filled"
 				   Class="mt-5">Create New Contract</MudButton>
 	}
 </MudContainer>
@@ -51,7 +51,7 @@
 	{
 		if (!firstRender)
 		{
-			return;			
+			return;
 		}
 
 		if (!await AuthService.IsUserAuthenticatedAsync())
@@ -64,14 +64,14 @@
 		StateHasChanged();
 	}
 
-	private async Task CreateNewContract()
+	private void NavigateToCreateContract()
 	{
-		// Logic to create a new contract
+		Navigation.NavigateTo("/contracts/create");
 	}
 
-	private async Task EditContract(int id)
+	private void NavigateToEditContract(int id)
 	{
-		// Logic to edit a contract
+		Navigation.NavigateTo($"/contracts/edit/{id}");
 	}
 
 	private async Task DeleteContract(int id)

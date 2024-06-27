@@ -1,0 +1,59 @@
+﻿@page "/contracts/create"
+
+@inject NavigationManager Navigation
+@inject ContractService ContractService
+@inject ContractViewModelValidator validator
+
+<MudGrid Justify="Justify.Center">
+	<MudItem xs="12" md="8">
+		<MudText Typo="Typo.h4">Create New Contract</MudText>
+		<MudPaper Class="pa-4">
+			<MudForm Model="newContract" @ref="form" Validation="validator.ValidateValue">
+				<MudTextField @bind-Value="newContract.ContractTypeId" Label="Contract Type Id*"
+							  For="() => newContract.ContractTypeId" Immediate="true" />
+				<MudTextField @bind-Value="newContract.Description" Label="Description*"
+							  For="() => newContract.Description" Immediate="true" />
+				<MudDatePicker PickerVariant="PickerVariant.Dialog" @bind-Date="@newContract.StartDate"
+							   Label="Start Date*" For="() => newContract.StartDate" />
+				<MudDatePicker PickerVariant="PickerVariant.Dialog" @bind-Date="@newContract.EndDate"
+							   Label="End Date" For="() => newContract.EndDate" />
+				<MudTextField @bind-Value="newContract.Salary" Label="Salary*"
+							  For="() => newContract.Salary" Immediate="true" />
+				<MudTextField @bind-Value="newContract.EmployeeEmployersId" Label="Employee Employers Id*"
+							  For="() => newContract.EmployeeEmployersId" Immediate="true" />
+				<MudButton Class="mt-4"
+						   Color="Color.Primary" Variant="Variant.Filled" OnClick="HandleCreateContract">
+					Create
+				</MudButton>
+				@if (errors is not null)
+				{
+					<MudText Color="Color.Error" Class="mt-2">@errors</MudText>
+				}
+			</MudForm>
+		</MudPaper>
+	</MudItem>
+</MudGrid>
+
+@code {
+	private MudForm form = null!;
+	private ContractViewModel newContract = new();
+	string? errors;
+
+	private async Task HandleCreateContract()
+	{
+		await form.Validate();
+		if (!form.IsValid)
+			return;
+
+		var response = await ContractService.CreateContractAsync(newContract);
+		if (response.IsSuccessStatusCode)
+		{
+			Navigation.NavigateTo("/contracts");
+		}
+		else
+		{
+			//errors = await response.Content.ReadAsStringAsync();
+			errors = "Something's wrong, please try again";
+		}
+	}
+}

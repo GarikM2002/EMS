@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Services.Contracts;
 using Shared.DTOs;
 
 namespace EMS.API.Controllers;
 
-[ApiController]
+[ApiController, Authorize]
 [Route("api/[controller]")]
 public class ContractsController(IContractService contractService) : ControllerBase
 {
