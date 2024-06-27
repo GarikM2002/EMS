@@ -2,7 +2,6 @@
 
 @inject AuthService AuthService
 @inject NavigationManager Navigation
-@inject IJSRuntime jsRuntime
 @inject RegistrationViewModelValidator validator
 
 <MudGrid Justify="Justify.Center">
@@ -44,8 +43,6 @@
 		var response = await AuthService.RegisterAsync(registerRequest);
 		if (response.IsSuccessStatusCode)
 		{
-			await jsRuntime.InvokeVoidAsync("alert", "Registration successful!");
-
 			Navigation.NavigateTo("/login");
 		}
 		else

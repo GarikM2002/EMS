@@ -29,8 +29,11 @@ public class AuthService(EMSHttpClient httpClient, LocalStorageService localStor
 
 	public async Task LogoutAsync()
 	{
-		await localStorageService.SetAuthTokenAsync("Out");
+		await localStorageService.SetAuthTokenAsync("token removed from storage.");
 	}
 
-
+	public async Task StoreAuthTokenAsync(string token)
+	{ 
+		await localStorageService.SetAuthTokenAsync(token);
+	}
 }

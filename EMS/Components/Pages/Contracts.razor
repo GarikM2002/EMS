@@ -1,4 +1,6 @@
 ﻿@page "/contracts"
+@inject NavigationManager Navigation
+@inject AuthService AuthService
 @inject ContractService ContractService
 
 <MudContainer MaxWidth="MaxWidth.Medium">
@@ -45,8 +47,19 @@
 @code {
 	private IEnumerable<ContractViewModel> contracts = null!;
 
-	protected override async Task OnInitializedAsync()
+	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
+		if (!firstRender)
+		{
+			return;			
+		}
+
+		if (!await AuthService.IsUserAuthenticatedAsync())
+		{
+			Navigation.NavigateTo("/");
+			return;
+		}
+
 		contracts = (await ContractService.GetAllContractsAsync())!;
 	}
 

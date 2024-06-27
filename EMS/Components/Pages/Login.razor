@@ -1,9 +1,7 @@
 ﻿@page "/login"
 
-@inject IJSRuntime jsRuntime
 @inject AuthService AuthService
 @inject NavigationManager Navigation
-@inject LocalStorageService localStorageService
 @inject LoginViewModelValidator loginValidator
 
 <MudGrid Justify="Justify.Center">
@@ -49,9 +47,9 @@
 			token = JsonSerializer.Deserialize<Dictionary<string, string>>(token)?["token"];
 
 			// Store the token in local storage
-			await localStorageService.SetAuthTokenAsync(token!);
+			await AuthService.StoreAuthTokenAsync(token!);
 
-			await jsRuntime.InvokeVoidAsync("alert", token);
+			Console.WriteLine("token stored! -> " + token);
 
 			Navigation.NavigateTo("/", true);
 		}

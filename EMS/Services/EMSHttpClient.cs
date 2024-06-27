@@ -56,7 +56,6 @@ public class EMSHttpClient
 		{
 			//httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
 			httpClient.DefaultRequestHeaders.Authorization = new("Bearer", token);
-			Console.WriteLine(token);
 		}
 	}
 }

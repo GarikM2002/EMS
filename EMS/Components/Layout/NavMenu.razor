@@ -1,4 +1,6 @@
 ﻿@inject AuthService auth
+@inject IDialogService dialogService
+@inject NavigationManager navigation
 
 <MudNavMenu Class="mt-16">
 	<MudNavLink Href="/" Match="NavLinkMatch.All" Class="mud-nav-link">
@@ -30,7 +32,7 @@
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
 		Console.WriteLine("\n\nFirstrender = " + firstRender + "\n\n");
-		
+
 		if (firstRender)
 		{
 			await HandleLoginAsync();
@@ -47,9 +49,18 @@
 
 	public async Task LogoutAsync()
 	{
+		DialogResult dialogResult = await (await dialogService.ShowAsync<LogoutDialog>("Logout Confirmation")).Result;
+
+		if (dialogResult.Canceled)
+		{
+			return;
+		}
+
 		await auth.LogoutAsync();
 		await HandleLoginAsync();
 
 		Console.WriteLine("Logout");
+
+		navigation.NavigateTo("/");
 	}
 }
