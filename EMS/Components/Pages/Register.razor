@@ -1,24 +1,25 @@
 ﻿@page "/register"
+
 @inject AuthService AuthService
 @inject NavigationManager Navigation
 @inject IJSRuntime jsRuntime
-@rendermode InteractiveServer
+@inject RegistrationViewModelValidator validator
 
 <MudGrid Justify="Justify.Center">
-	<MudItem xs="12" md="8" >
+	<MudItem xs="12" md="8">
 		<MudPaper Class="pa-4">
 			<MudText Typo="Typo.h4" Class="mb-4">Register</MudText>
-			<MudForm @ref="form" @bind-IsValid="@success" @bind-Errors="@errorMessages">
-				<MudTextField @bind-Value="registerRequest.FirstName" Label="First Name" Required="true"
+			<MudForm Model="registerRequest" @ref="form" Validation="validator.ValidateValue">
+				<MudTextField @bind-Value="registerRequest.FirstName" Label="First Name" Immediate="true"
 							  InputType="InputType.Text" For="() => registerRequest.FirstName" />
-				<MudTextField @bind-Value="registerRequest.LastName" Label="Last Name" Required="true"
+				<MudTextField @bind-Value="registerRequest.LastName" Label="Last Name" Immediate="true"
 							  InputType="InputType.Text" For="() => registerRequest.LastName" />
-				<MudTextField @bind-Value="registerRequest.Email" Label="Email" Required="true"
+				<MudTextField @bind-Value="registerRequest.Email" Label="Email" Immediate="true"
 							  InputType="InputType.Email" For="() => registerRequest.Email" />
-				<MudTextField @bind-Value="registerRequest.Password" Label="Password" Required="true"
+				<MudTextField @bind-Value="registerRequest.Password" Label="Password" Immediate="true"
 							  InputType="InputType.Password" For="() => registerRequest.Email" />
-				<MudButton Color="Color.Primary" Variant="Variant.Filled" Disabled="@(!success)"
-						   Class="ml-auto" OnClick="HandleRegister">Register</MudButton>
+				<MudButton Color="Color.Primary" Variant="Variant.Filled"
+						   Class="ml-auto mt-4" OnClick="HandleRegister">Register</MudButton>
 			</MudForm>
 			@foreach (var e in errorMessages)
 			{
@@ -32,10 +33,14 @@
 	private MudForm form = null!;
 	private RegistrationViewModel registerRequest = new();
 	private string[] errorMessages = [];
-	private bool success;
 
 	private async Task HandleRegister()
 	{
+		await form.Validate();
+
+		if (!form.IsValid)
+			return;
+
 		var response = await AuthService.RegisterAsync(registerRequest);
 		if (response.IsSuccessStatusCode)
 		{

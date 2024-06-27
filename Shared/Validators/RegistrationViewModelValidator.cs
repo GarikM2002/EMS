@@ -25,4 +25,13 @@ public class RegistrationViewModelValidator : AbstractValidator<RegistrationView
 		RuleFor(x => x.LastName)
 			.NotEmpty().WithMessage("Last Name is required.");
 	}
+
+	public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+	{
+		var result = await ValidateAsync(ValidationContext<RegistrationViewModel>.CreateWithOptions(
+			(RegistrationViewModel)model, x => x.IncludeProperties(propertyName)));
+		if (result.IsValid)
+			return [];
+		return result.Errors.Select(e => e.ErrorMessage);
+	};
 }

@@ -1,7 +1,9 @@
 using EMS.Components;
 using EMS.Services;
-using Microsoft.JSInterop;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using MudBlazor.Services;
+using Shared.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,9 @@ builder.Services.AddScoped<LocalStorageService>();
 builder.Services.AddHttpClient<EMSHttpClient>();
 builder.Services.AddScoped<ContractService>();
 builder.Services.AddScoped<AuthService>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<LoginViewModelValidator>();
+builder.Services.AddFluentValidationAutoValidation();
 
 var app = builder.Build();
 

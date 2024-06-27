@@ -15,4 +15,13 @@ public class LoginViewModelValidator : AbstractValidator<LoginViewModel>
 			.NotEmpty().WithMessage("Password is required.")
 			.MinimumLength(6).WithMessage("Password must be at least 6 characters long.");
 	}
+
+	public Func<object, string, Task<IEnumerable<string>>> ValidateValue => async (model, propertyName) =>
+	{
+		var result = await ValidateAsync(ValidationContext<LoginViewModel>.CreateWithOptions(
+			(LoginViewModel)model, x => x.IncludeProperties(propertyName)));
+		if (result.IsValid)
+			return [];
+		return result.Errors.Select(e => e.ErrorMessage);
+	};
 }
