@@ -2,14 +2,17 @@
 
 namespace DataAccess.Interfaces
 {
-    public interface IContractRepository
-    {
-        public Task<IEnumerable<Contract>> GetAllContractsAsync();
-        public Task<IEnumerable<Contract>> GetContractsByEmployerIdAsync(int employerId);
-        public Task<IEnumerable<Contract>> GetAllBySearchPatternAsync(string pattern);
-        public Task<Contract?> GetContractByIdAsync(int id);
-        public Task<int> CreateContractAsync(Contract contract);
-        public Task<int> UpdateContractAsync(Contract contract);
-        public Task<int> DeleteContractAsync(int id);
-    }
+	public interface IContractRepository
+	{
+		Task<IEnumerable<Contract>> GetAllContractsAsync();
+		Task<IEnumerable<Contract>> GetAllContractsPaginatedAsync(int page, int pageSize);
+		Task<IEnumerable<Contract>> GetContractsByEmployerIdAsync(int employerId);
+		Task<IEnumerable<Contract>> GetAllBySearchPatternAsync(string pattern);
+		Task<IEnumerable<Contract>> GetAllBySearchPatternPaginatedAsync(string pattern,
+		 int page, int pageSize);
+		Task<Contract?> GetContractByIdAsync(int id);
+		Task<int> CreateContractAsync(Contract contract);
+		Task<int> UpdateContractAsync(Contract contract);
+		Task<int> DeleteContractAsync(int id);
+	}
 }

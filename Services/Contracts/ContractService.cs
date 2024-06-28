@@ -29,13 +29,26 @@ public class ContractService(IContractRepository contractRepository, IMapper map
         return mapper.Map<IEnumerable<Contract>, IEnumerable<ContractViewModel>>(contracts);
 	}
 
+	public async Task<IEnumerable<ContractViewModel>> GetAllBySearchPatternPaginatedAsync(string pattern,
+        int page, int pageSize)
+	{
+        var contracts = await contractRepository.GetAllBySearchPatternPaginatedAsync(pattern, page, pageSize);
+        return mapper.Map<IEnumerable<Contract>, IEnumerable<ContractViewModel>>(contracts);
+	}
+
 	public async Task<IEnumerable<ContractViewModel>> GetAllContractsAsync()
     {
         var contracts = await contractRepository.GetAllContractsAsync();
         return mapper.Map<IEnumerable<Contract>, IEnumerable<ContractViewModel>>(contracts);
     }
 
-    public async Task<ContractViewModel?> GetContractByIdAsync(int id)
+	public async Task<IEnumerable<ContractViewModel>> GetAllContractsPaginatedAsync(int page, int pageSize)
+	{
+		var contracts = await contractRepository.GetAllContractsPaginatedAsync(page, pageSize);
+		return mapper.Map<IEnumerable<Contract>, IEnumerable<ContractViewModel>>(contracts);
+	}
+
+	public async Task<ContractViewModel?> GetContractByIdAsync(int id)
     {
         var contract = await contractRepository.GetContractByIdAsync(id);
 

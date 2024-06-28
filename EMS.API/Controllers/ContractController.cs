@@ -19,6 +19,14 @@ public class ContractsController(IContractService contractService) : ControllerB
 		return Ok(contracts);
 	}
 
+	[HttpGet("all/{page}/{pageSize}")]
+	public async Task<IActionResult> GetAllContractsPaginatedAsync(int page, int pageSize)
+	{
+		var contracts = await contractService.GetAllContractsPaginatedAsync(page, pageSize);
+
+		return Ok(contracts);
+	}
+
 	[HttpGet("{id}")]
 	public async Task<IActionResult> GetContractById(int id)
 	{
@@ -41,6 +49,13 @@ public class ContractsController(IContractService contractService) : ControllerB
 	public async Task<IActionResult> GetAllContractsBySearchPattern(string pattern)
 	{
 		var contracts = await contractService.GetAllBySearchPatternAsync(pattern);
+		return Ok(contracts);
+	}
+
+	[HttpGet("search/{pattern}/{page}/{pageSize}")]
+	public async Task<IActionResult> GetAllContractsBySearchPattern(string pattern, int page, int pageSize)
+	{
+		var contracts = await contractService.GetAllBySearchPatternPaginatedAsync(pattern, page, pageSize);
 		return Ok(contracts);
 	}
 

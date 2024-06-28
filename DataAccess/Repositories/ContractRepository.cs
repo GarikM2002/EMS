@@ -17,6 +17,20 @@ public class ContractRepository(DataContext dbContext) : IContractRepository
 		return await connection.QueryAsync<Contract>(sql);
 	}
 
+	public async Task<IEnumerable<Contract>> GetAllContractsPaginatedAsync(int page, int pageSize)
+	{
+		using var connection = dbContext.CreateConnection();
+
+		string sql = @"SELECT * FROM Contracts
+						ORDER BY Id
+						OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
+		return await connection.QueryAsync<Contract>(sql, new
+		{
+			Offset = page * pageSize,
+			PageSize = pageSize,
+		});
+	}
+
 	public async Task<IEnumerable<Contract>> GetContractsByEmployerIdAsync(int employerId)
 	{
 		using var connection = dbContext.CreateConnection();
@@ -28,6 +42,68 @@ public class ContractRepository(DataContext dbContext) : IContractRepository
             WHERE e.ID = @EmployerId";
 
 		return await connection.QueryAsync<Contract>(sql, new { EmployerId = employerId });
+	}
+
+	public async Task<IEnumerable<Contract>> GetAllBySearchPatternAsync(string pattern)
+	{
+		if (string.IsNullOrEmpty(pattern))
+		{
+			throw new ArgumentException("Search pattern cannot be null or empty", nameof(pattern));
+		}
+
+		const string sqlQuery = @"
+            SELECT *
+			FROM Contracts c
+			WHERE 
+			  CONVERT(NVARCHAR, ContractTypeId) LIKE @Pattern OR
+			  Description LIKE @Pattern OR
+			  Format(StartDate, 'MM-dd-yyyy') LIKE @Pattern OR
+			  Format(EndDate, 'MM-dd-yyyy') LIKE @Pattern OR
+			  CONVERT(NVARCHAR, Salary) LIKE @Pattern OR
+			  CONVERT(NVARCHAR, EmployeeEmployersId) LIKE @Pattern;";
+
+		using var connection = dbContext.CreateConnection();
+
+		var results = await connection.QueryAsync<Contract>(sqlQuery, new { Pattern = $"%{pattern}%" });
+		return results;
+	}
+
+	public async Task<IEnumerable<Contract>> GetAllBySearchPatternPaginatedAsync(string pattern,
+		int page, int pageSize)
+	{
+		if (string.IsNullOrEmpty(pattern))
+		{
+			throw new ArgumentException("Search pattern cannot be null or empty", nameof(pattern));
+		}
+
+		const string sqlQuery = @"
+        DECLARE @Pattern NVARCHAR(50);
+        SET @Pattern = @PatternParam;
+
+        SELECT * 
+        FROM Contracts c
+        WHERE 
+            CONVERT(NVARCHAR, ContractTypeId) LIKE @Pattern OR
+            c.Description LIKE @Pattern OR
+            REPLACE(FORMAT(StartDate, 'MM-dd-yyyy'), '-', '') LIKE @Pattern OR
+            REPLACE(FORMAT(EndDate, 'MM-dd-yyyy'), '-', '') LIKE @Pattern OR
+            CONVERT(NVARCHAR, Salary) LIKE @Pattern OR
+            CONVERT(NVARCHAR, EmployeeEmployersId) LIKE @Pattern
+        ORDER BY c.Id
+        OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+		";
+
+		var parameters = new
+		{
+			PatternParam = $"%{pattern}%",
+			Offset = page * pageSize,
+			PageSize = pageSize
+		};
+
+		using var connection = dbContext.CreateConnection();
+
+		var results = await connection.QueryAsync<Contract>(sqlQuery, parameters);
+		return results;
 	}
 
 	public async Task<Contract?> GetContractByIdAsync(int id)
@@ -71,29 +147,5 @@ public class ContractRepository(DataContext dbContext) : IContractRepository
 
 		string sql = "DELETE FROM Contracts WHERE Id = @Id";
 		return await connection.ExecuteAsync(sql, new { Id = id });
-	}
-
-	public async Task<IEnumerable<Contract>> GetAllBySearchPatternAsync(string pattern)
-	{
-		if (string.IsNullOrEmpty(pattern))
-		{
-			throw new ArgumentException("Search pattern cannot be null or empty", nameof(pattern));
-		}
-
-		const string sqlQuery = @"
-            SELECT *
-			FROM Contracts c
-			WHERE 
-			  CONVERT(NVARCHAR, ContractTypeId) LIKE @Pattern OR
-			  Description LIKE @Pattern OR
-			  Format(StartDate, 'MM-dd-yyyy') LIKE @Pattern OR
-			  Format(EndDate, 'MM-dd-yyyy') LIKE @Pattern OR
-			  CONVERT(NVARCHAR, Salary) LIKE @Pattern OR
-			  CONVERT(NVARCHAR, EmployeeEmployersId) LIKE @Pattern;";
-
-		using var connection = dbContext.CreateConnection();
-			
-		var results = await connection.QueryAsync<Contract>(sqlQuery, new { Pattern = $"%{pattern}%" });
-		return results;
 	}
 }

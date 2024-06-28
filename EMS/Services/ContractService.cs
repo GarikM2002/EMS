@@ -10,6 +10,11 @@ public class ContractService(EMSHttpClient httpClient)
 	{
 		return await httpClient.GetFromJsonAsync<IEnumerable<ContractViewModel>>("/api/contracts");
 	}
+	public async Task<IEnumerable<ContractViewModel>?> GetAllContractsAsync(int page, int pageSize)
+	{
+		return await httpClient.GetFromJsonAsync<IEnumerable<ContractViewModel>>(
+			$"/api/contracts/all/{page}/{pageSize}");
+	}
 
 	public async Task<ContractViewModel?> GetContractByIdAsync(int id)
 	{
@@ -38,6 +43,16 @@ public class ContractService(EMSHttpClient httpClient)
 
 		return await httpClient.GetFromJsonAsync<IEnumerable<ContractViewModel>?>(
 			$"/api/contracts/search/{pattern}");
+	}
+
+	public async Task<IEnumerable<ContractViewModel>?> GetContractsBySearchPatternAsync(string pattern,
+		int page, int pageSize)
+	{
+		if (string.IsNullOrEmpty(pattern))
+			return await GetAllContractsAsync();
+
+		return await httpClient.GetFromJsonAsync<IEnumerable<ContractViewModel>?>(
+			$"/api/contracts/search/{pattern}/{page}/{pageSize}");
 	}
 }
 
