@@ -3,7 +3,7 @@
 @inject AuthService AuthService
 @inject ContractService ContractService
 
-<MudContainer MaxWidth="MaxWidth.Medium">
+<MudContainer Class="xs-12 md-9">
 	<MudText Typo="Typo.h3">Contracts</MudText>
 
 	@if (contracts == null)
@@ -12,6 +12,10 @@
 	}
 	else
 	{
+		<MudTextField @bind-Value="searchPattern" Label="Search" Variant="Variant.Outlined"
+					  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"
+					  Immediate="true" OnKeyUp="SearchContracts" Class="my-5"></MudTextField>
+
 		<MudTable Items="contracts" Hover="true">
 			<HeaderContent>
 				<MudTh>Id</MudTh>
@@ -27,8 +31,8 @@
 				<MudTd DataLabel="Id">@context.Id</MudTd>
 				<MudTd DataLabel="Contract Type Id">@context.ContractTypeId</MudTd>
 				<MudTd DataLabel="Description">@context.Description</MudTd>
-				<MudTd DataLabel="Start Date">@context.StartDate?.ToShortDateString()</MudTd>
-				<MudTd DataLabel="End Date">@context.EndDate?.ToShortDateString()</MudTd>
+				<MudTd DataLabel="Start Date">@context.StartDate!.Value.ToString("MM-dd-yyyy")</MudTd>
+				<MudTd DataLabel="End Date">@(context.EndDate.HasValue ? context.EndDate.Value.ToString("MM-dd-yyyy") : "") </MudTd>
 				<MudTd DataLabel="Salary">@context.Salary</MudTd>
 				<MudTd DataLabel="EmployeeEmployersId">@context.EmployeeEmployersId</MudTd>
 				<MudTd DataLabel="Actions">
@@ -46,6 +50,7 @@
 
 @code {
 	private IEnumerable<ContractViewModel> contracts = null!;
+	private string searchPattern = string.Empty;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
@@ -78,5 +83,19 @@
 	{
 		await ContractService.DeleteContractAsync(id);
 		contracts = (await ContractService.GetAllContractsAsync())!;
+	}
+
+	private async Task SearchContracts()
+	{
+		if (string.IsNullOrWhiteSpace(searchPattern.Replace("/", "")))
+		{
+			contracts = (await ContractService.GetAllContractsAsync())!;
+		}
+		else
+		{
+			contracts = (await ContractService.GetContractsBySearchPatternAsync(searchPattern.Replace("/", "")))!;
+		}
+
+		StateHasChanged();
 	}
 }

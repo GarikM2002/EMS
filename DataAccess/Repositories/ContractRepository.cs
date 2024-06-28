@@ -81,15 +81,15 @@ public class ContractRepository(DataContext dbContext) : IContractRepository
 		}
 
 		const string sqlQuery = @"
-            SELECT * 
-            FROM Contracts 
-            WHERE 
-                ContractTypeId LIKE @Pattern OR
-                Description LIKE @Pattern OR
-                StartDate LIKE @Pattern OR
-                EndDate LIKE @Pattern OR
-                Salary LIKE @Pattern OR
-                EmployeeEmployersId LIKE @Pattern";
+            SELECT *
+			FROM Contracts c
+			WHERE 
+			  CONVERT(NVARCHAR, ContractTypeId) LIKE @Pattern OR
+			  Description LIKE @Pattern OR
+			  Format(StartDate, 'MM-dd-yyyy') LIKE @Pattern OR
+			  Format(EndDate, 'MM-dd-yyyy') LIKE @Pattern OR
+			  CONVERT(NVARCHAR, Salary) LIKE @Pattern OR
+			  CONVERT(NVARCHAR, EmployeeEmployersId) LIKE @Pattern;";
 
 		using var connection = dbContext.CreateConnection();
 			

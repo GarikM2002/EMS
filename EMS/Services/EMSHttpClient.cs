@@ -39,7 +39,7 @@ public class EMSHttpClient
 	{
 		await AddHeadersAsync();
 
-		return await httpClient.GetFromJsonAsync<TValue>(requestUri);
+		return await httpClient.GetFromJsonAsync<TValue?>(requestUri);
 	}
 
 	public async Task<HttpResponseMessage> GetAsync(string? requestUri)
