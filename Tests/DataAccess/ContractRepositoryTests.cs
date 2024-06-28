@@ -56,7 +56,30 @@ public class ContractRepositoryTests : IDisposable
         }       
     }
 
-    [Fact]
+	[Theory]
+	[InlineData("for John Doe with Alice Johnson", 1, 1)]
+	[InlineData("30000", 2, 2, 3)]
+	[InlineData("asdasdasdasdasdasdwqeqw sadfsf", 0)]
+	public async Task GetAllBySearchPatternAsync_ReturnsContracts(string pattern, int expectedCount, 
+        params int[] expectedContractIds)
+	{
+		// Arrange               
+
+		// Act
+		var result = await repository.GetAllBySearchPatternAsync(pattern);
+		var arr = result.ToArray();
+
+		// Assert
+		Assert.NotNull(result);
+		Assert.Equal(expectedCount, arr.Length);
+
+		for (int i = 0; i < arr.Length; i++)
+		{
+			Assert.Equal(expectedContractIds[i], arr[i].Id);
+		}
+	}
+
+	[Fact]
     public async Task GetContractByIdAsync_ReturnsContract()
     {
         // Arrange

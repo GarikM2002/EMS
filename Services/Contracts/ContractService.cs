@@ -23,7 +23,13 @@ public class ContractService(IContractRepository contractRepository, IMapper map
         return await contractRepository.DeleteContractAsync(id);
     }
 
-    public async Task<IEnumerable<ContractViewModel>> GetAllContractsAsync()
+	public async Task<IEnumerable<ContractViewModel>> GetAllBySearchPatternAsync(string pattern)
+	{
+		var contracts = await contractRepository.GetAllBySearchPatternAsync(pattern);
+        return mapper.Map<IEnumerable<Contract>, IEnumerable<ContractViewModel>>(contracts);
+	}
+
+	public async Task<IEnumerable<ContractViewModel>> GetAllContractsAsync()
     {
         var contracts = await contractRepository.GetAllContractsAsync();
         return mapper.Map<IEnumerable<Contract>, IEnumerable<ContractViewModel>>(contracts);

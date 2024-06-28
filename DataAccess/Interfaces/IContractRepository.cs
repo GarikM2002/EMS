@@ -6,6 +6,7 @@ namespace DataAccess.Interfaces
     {
         public Task<IEnumerable<Contract>> GetAllContractsAsync();
         public Task<IEnumerable<Contract>> GetContractsByEmployerIdAsync(int employerId);
+        public Task<IEnumerable<Contract>> GetAllBySearchPatternAsync(string pattern);
         public Task<Contract?> GetContractByIdAsync(int id);
         public Task<int> CreateContractAsync(Contract contract);
         public Task<int> UpdateContractAsync(Contract contract);
