@@ -16,7 +16,8 @@
 					  Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Search"
 					  Immediate="true" OnKeyUp="SearchContracts" Class="my-5"></MudTextField>
 
-		<MudTable Items="contracts" Hover="true">
+		<MudTable @ref="table" Items="contracts" Hover="true" ServerData="new Func<TableState,
+				Task<TableData<ContractViewModel>>>(LoadContracts)">
 			<HeaderContent>
 				<MudTh>Id</MudTh>
 				<MudTh>ContractTypeId</MudTh>
@@ -32,7 +33,7 @@
 				<MudTd DataLabel="Contract Type Id">@context.ContractTypeId</MudTd>
 				<MudTd DataLabel="Description">@context.Description</MudTd>
 				<MudTd DataLabel="Start Date">@context.StartDate!.Value.ToString("MM-dd-yyyy")</MudTd>
-				<MudTd DataLabel="End Date">@(context.EndDate.HasValue ? context.EndDate.Value.ToString("MM-dd-yyyy") : "") </MudTd>
+				<MudTd DataLabel="End Date">@(context.EndDate.HasValue ? context.EndDate.Value.ToString("MM-dd-yyyy") : "")</MudTd>
 				<MudTd DataLabel="Salary">@context.Salary</MudTd>
 				<MudTd DataLabel="EmployeeEmployersId">@context.EmployeeEmployersId</MudTd>
 				<MudTd DataLabel="Actions">
@@ -42,6 +43,9 @@
 							   Variant="Variant.Filled" Class="my-3">Delete</MudButton>
 				</MudTd>
 			</RowTemplate>
+			<PagerContent>
+				<MudTablePager PageSizeOptions="@(new HashSet<int>([defaultPageSize, 1, 2, 3, 5, 10]).ToArray())" />
+			</PagerContent>
 		</MudTable>
 		<MudButton OnClick="NavigateToCreateContract" Color="Color.Primary" Variant="Variant.Filled"
 				   Class="mt-5">Create New Contract</MudButton>
@@ -49,8 +53,10 @@
 </MudContainer>
 
 @code {
+	private MudTable<ContractViewModel> table = new();
 	private IEnumerable<ContractViewModel> contracts = null!;
 	private string searchPattern = string.Empty;
+	private int defaultPageSize = 3;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
@@ -65,7 +71,7 @@
 			return;
 		}
 
-		contracts = (await ContractService.GetAllContractsAsync())!;
+		await LoadContracts();
 		StateHasChanged();
 	}
 
@@ -82,20 +88,34 @@
 	private async Task DeleteContract(int id)
 	{
 		await ContractService.DeleteContractAsync(id);
-		contracts = (await ContractService.GetAllContractsAsync())!;
+		await table.ReloadServerData();
 	}
 
 	private async Task SearchContracts()
 	{
-		if (string.IsNullOrWhiteSpace(searchPattern.Replace("/", "")))
+ 		await table.ReloadServerData();
+	}
+
+	private async Task<TableData<ContractViewModel>> LoadContracts(TableState state = default!)
+	{
+		if (state is null)
+			state = new() { PageSize = defaultPageSize };
+
+		int? total = 0;
+		var patternNormalized = searchPattern.Replace("/", "");
+
+		if (string.IsNullOrWhiteSpace(patternNormalized))
 		{
-			contracts = (await ContractService.GetAllContractsAsync())!;
+			contracts = (await ContractService.GetAllContractsAsync(state.Page, state.PageSize))!;
+			total = (await ContractService.GetAllContractsAsync())?.Count();
 		}
 		else
 		{
-			contracts = (await ContractService.GetContractsBySearchPatternAsync(searchPattern.Replace("/", "")))!;
+			contracts = (await ContractService.GetContractsBySearchPatternAsync(patternNormalized,
+				state.Page, state.PageSize))!;
+			total = (await ContractService.GetContractsBySearchPatternAsync(patternNormalized))?.Count();
 		}
 
-		StateHasChanged();
+		return new() { Items = contracts, TotalItems = total ?? 0 };
 	}
 }
